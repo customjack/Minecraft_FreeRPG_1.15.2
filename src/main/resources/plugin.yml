@@ -1,6 +1,6 @@
-name: SpiteMC
+name: FreeRPG
 version: ${project.version}
-main: me.carlton.spitemc.SpiteMC
+main: mc.carlton.freerpg.FreeRPG
 api-version: 1.13
 authors: [JackCarlton]
 description: Made from Spite

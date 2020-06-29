@@ -1,6 +1,6 @@
-name: SpiteMC
-version: 1.0-SNAPSHOT
-main: me.carlton.spitemc.SpiteMC
+name: FreeRPG
+version: 1.0-BETA
+main: mc.carlton.freerpg.FreeRPG
 api-version: 1.13
 authors: [JackCarlton]
 description: Made from Spite

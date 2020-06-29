@@ -22,7 +22,7 @@ public class StatManager {
         Date now = new Date();
         SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy HH:ss:mm");
 
-        File userdata = new File(Bukkit.getServer().getPluginManager().getPlugin("SpiteMC").getDataFolder(), File.separator + "PlayerDatabase");
+        File userdata = new File(Bukkit.getServer().getPluginManager().getPlugin("FreeRPG").getDataFolder(), File.separator + "PlayerDatabase");
         if(!userdata.exists()){
             userdata.mkdir();
         }

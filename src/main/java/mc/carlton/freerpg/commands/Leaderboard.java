@@ -36,7 +36,7 @@ public class Leaderboard implements CommandExecutor {
                 }
                 if (sender instanceof Player) {
                     Player p = (Player) sender;
-                    if (p.hasPermission("spiteMC.leaderboard")) {
+                    if (p.hasPermission("freeRPG.leaderboard")) {
                         p.sendMessage(ChatColor.RED + "------| " + ChatColor.GREEN + ChatColor.BOLD.toString() + skillTitle+ " Leaderboard" +
                                       ChatColor.RESET + ChatColor.GREEN.toString() + " Page ["+ Integer.toString(page) + "/" + Integer.toString(totalPages) + "]" +
                                       ChatColor.RED.toString() + " |-----");
@@ -58,7 +58,7 @@ public class Leaderboard implements CommandExecutor {
             else {
                 if (sender instanceof Player) {
                     Player p = (Player) sender;
-                    if (p.hasPermission("spiteMC.leaderboard")) {
+                    if (p.hasPermission("freeRPG.leaderboard")) {
                         p.sendMessage(ChatColor.RED + "Improper Arguments, try /statLeaders [skillName] [(Optional) page]");
                     } else {
                         p.sendMessage(ChatColor.RED + "You do not have permissions to run this command!");
@@ -72,7 +72,7 @@ public class Leaderboard implements CommandExecutor {
         else {
             if (sender instanceof Player) {
                 Player p = (Player) sender;
-                if (p.hasPermission("spiteMC.setLevel")) {
+                if (p.hasPermission("freeRPG.setLevel")) {
                     p.sendMessage(ChatColor.RED + "Improper Arguments, try /statLeaders [skillName] [(Optional) page]");
                 } else {
                     p.sendMessage(ChatColor.RED + "You do not have permissions to run this command!");

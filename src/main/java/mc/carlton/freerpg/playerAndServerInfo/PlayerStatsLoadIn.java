@@ -25,7 +25,7 @@ public class PlayerStatsLoadIn {
         ArrayList<Number> stats = new ArrayList<Number>();
         String pName = p.getName();
         UUID pUUID = p.getUniqueId();
-        File userdata = new File(Bukkit.getServer().getPluginManager().getPlugin("SpiteMC").getDataFolder(), File.separator + "PlayerDatabase");
+        File userdata = new File(Bukkit.getServer().getPluginManager().getPlugin("FreeRPG").getDataFolder(), File.separator + "PlayerDatabase");
         File f = new File(userdata, File.separator + pUUID.toString() + ".yml");
         FileConfiguration playerData = YamlConfiguration.loadConfiguration(f);
         if(f.exists()) {
@@ -82,7 +82,7 @@ public class PlayerStatsLoadIn {
         Map<String, ArrayList<Number>> pStatAll = pStatClass.getPlayerData();
         String pName = p.getName();
         UUID pUUID = p.getUniqueId();
-        File userdata = new File(Bukkit.getServer().getPluginManager().getPlugin("SpiteMC").getDataFolder(), File.separator + "PlayerDatabase");
+        File userdata = new File(Bukkit.getServer().getPluginManager().getPlugin("FreeRPG").getDataFolder(), File.separator + "PlayerDatabase");
         File f = new File(userdata, File.separator + pUUID.toString() + ".yml");
         FileConfiguration playerData = YamlConfiguration.loadConfiguration(f);
         if(f.exists()) {

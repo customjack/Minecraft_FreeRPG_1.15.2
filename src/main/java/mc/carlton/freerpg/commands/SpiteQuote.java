@@ -13,7 +13,7 @@ public class SpiteQuote implements CommandExecutor {
             Player p = (Player) sender;
             String version = "Beta 1.0";
             p.sendMessage("Everything good is made of spite");
-            System.out.println("[COMMAND_OUT] Running SpiteMC version " + version);
+            System.out.println("[COMMAND_OUT] Running FreeRPG version " + version);
         } else {
             System.out.println("You need to be a player to cast this command");
         }

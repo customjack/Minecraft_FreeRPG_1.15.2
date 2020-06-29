@@ -39,7 +39,7 @@ public class ArrowTypes {
             ItemStack arrow = inv.getItem(0);
             if (arrow == null) {
                 if (timesRan > 30) {
-                    System.out.println("[SpiteMC/ERROR]: Could not get list of tipped arrows, Dragonless Arrows perk will NOT work");
+                    System.out.println("[FreeRPG/ERROR]: Could not get list of tipped arrows, Dragonless Arrows perk will NOT work");
                 }
                 new BukkitRunnable() {
                         @Override
