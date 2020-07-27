@@ -1,10 +1,13 @@
 package mc.carlton.freerpg.guiEvents;
 
+import mc.carlton.freerpg.FreeRPG;
 import mc.carlton.freerpg.perksAndAbilities.*;
 import mc.carlton.freerpg.playerAndServerInfo.ChangeStats;
 import mc.carlton.freerpg.playerAndServerInfo.PlayerStats;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.attribute.Attributable;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -12,6 +15,7 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.plugin.Plugin;
 
 import java.util.*;
 
@@ -109,13 +113,18 @@ public class ConfirmationGUIClick implements Listener {
                             Farming farmingClass = new Farming(p);
                             farmingClass.oneWithNatureEnd();
                         }
-                        if (skillName.equals("fishing") && (int) pStats.get(13) > 0) {
+                        else if (skillName.equals("fishing") && (int) pStats.get(13) > 0) {
                             Fishing fishingClass = new Fishing(p);
                             fishingClass.fishPersonEnd();
                         }
-                        if (skillName.equals("agility") && (int) pStats.get(13) > 0) {
+                        else if (skillName.equals("agility") && (int) pStats.get(13) > 0) {
                             Agility agilityClass = new Agility(p);
                             agilityClass.gracefulFeetEnd();
+                        }
+                        else if (skillName.equals("defense") && (int) pStats.get(13) > 0) {
+                            Plugin plugin = FreeRPG.getPlugin(FreeRPG.class);
+                            double HP = Double.valueOf(plugin.getConfig().getString("multipliers.globalMultiplier"));
+                            ((Attributable) p).getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(HP);
                         }
 
                         //Find Skill Tokens, Refund skill tokens, set skills to 0
@@ -147,11 +156,11 @@ public class ConfirmationGUIClick implements Listener {
                     }
 
                     p.closeInventory();
-                    p.performCommand("skillTreeGUI " + skillName);
+                    p.performCommand("frpg skillTreeGUI " + skillName);
                 }
                 else if (e.getCurrentItem().getType() == Material.RED_TERRACOTTA) {
                     p.closeInventory();
-                    p.performCommand("skillTreeGUI " + skillName);
+                    p.performCommand("frpg skillTreeGUI " + skillName);
                 }
             }
 
