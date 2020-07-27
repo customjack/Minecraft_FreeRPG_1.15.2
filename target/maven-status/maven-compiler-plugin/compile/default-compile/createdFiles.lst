@@ -77,6 +77,7 @@ mc\carlton\freerpg\perksAndAbilities\Mining$3.class
 mc\carlton\freerpg\commands\SpiteQuote.class
 mc\carlton\freerpg\combatEvents\PotionSplash.class
 mc\carlton\freerpg\perksAndAbilities\Alchemy$2.class
+mc\carlton\freerpg\commands\FrpgCommands.class
 mc\carlton\freerpg\perksAndAbilities\Alchemy$1.class
 mc\carlton\freerpg\perksAndAbilities\Mining$1.class
 mc\carlton\freerpg\perksAndAbilities\Fishing.class
