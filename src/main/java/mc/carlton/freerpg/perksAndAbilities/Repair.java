@@ -154,6 +154,9 @@ public class Repair {
     }
 
     public boolean repairItem() {
+        if (!p.hasPermission("freeRPG.canRepair")) {
+            return false;
+        }
         Material toolType = itemInHand.getType();
         boolean repaired = false;
         if (repairItems.containsKey(toolType)) {
@@ -528,6 +531,9 @@ public class Repair {
     }
 
     public void salvaging() {
+        if (!p.hasPermission("freeRPG.canSalvage")) {
+            return;
+        }
         Map<String, ArrayList<Number>> pStat = pStatClass.getPlayerData();
         int salvageLevel = (int) pStat.get("repair").get(7);
         if (repairItemsAmount.containsKey(itemInHand.getType())) {
