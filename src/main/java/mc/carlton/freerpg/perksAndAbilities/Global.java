@@ -4,7 +4,9 @@ import mc.carlton.freerpg.FreeRPG;
 import mc.carlton.freerpg.playerAndServerInfo.ChangeStats;
 import mc.carlton.freerpg.playerAndServerInfo.PlayerStats;
 import org.bukkit.Material;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
@@ -25,20 +27,20 @@ public class Global {
     //GET PLAYER STATS LIKE THIS:        Map<String, ArrayList<Number>> pStat = pStatClass.getPlayerData(p);
 
     Random rand = new Random(); //Random class Import
-    Material[] valuableItems0 = {Material.IRON_ORE,Material.GOLD_ORE,Material.DIAMOND_ORE,Material.EMERALD_ORE,Material.REDSTONE_ORE,Material.LAPIS_ORE,
-                                  Material.IRON_BLOCK,Material.GOLD_BLOCK,Material.DIAMOND_BLOCK,Material.EMERALD_BLOCK,Material.REDSTONE_BLOCK,Material.LAPIS_BLOCK,
-                                  Material.SLIME_BLOCK,Material.SPONGE,Material.NETHER_QUARTZ_ORE,Material.NETHER_WART_BLOCK,Material.DRAGON_EGG,Material.SHULKER_BOX,
-                                  Material.ENCHANTING_TABLE,Material.ANVIL,Material.BEACON,Material.BREWING_STAND,Material.CAKE,Material.JUKEBOX,
-                                  Material.TNT,Material.CREEPER_HEAD,Material.DRAGON_HEAD,Material.PLAYER_HEAD,Material.ZOMBIE_HEAD,Material.SKELETON_SKULL,Material.WITHER_SKELETON_SKULL,
-                                  Material.ENDER_EYE,Material.ENDER_PEARL,Material.FIREWORK_ROCKET,Material.FIRE_CHARGE,Material.POTION,Material.SPLASH_POTION,Material.LINGERING_POTION,
-                                  Material.NETHER_WART,Material.REDSTONE,Material.TRIDENT,Material.DIAMOND_AXE,Material.DIAMOND_BOOTS,Material.DIAMOND_CHESTPLATE,
-                                  Material.DIAMOND_HELMET,Material.DIAMOND_HOE,Material.DIAMOND_LEGGINGS,Material.DIAMOND_PICKAXE,Material.DIAMOND_SHOVEL,Material.DIAMOND_SWORD,
-                                  Material.ELYTRA,Material.ENCHANTED_BOOK,Material.ENCHANTED_GOLDEN_APPLE,Material.GOLDEN_APPLE,Material.IRON_INGOT,
+    Material[] valuableItems0 = {Material.IRON_ORE, Material.GOLD_ORE, Material.DIAMOND_ORE, Material.EMERALD_ORE, Material.REDSTONE_ORE, Material.LAPIS_ORE,
+                                  Material.IRON_BLOCK, Material.GOLD_BLOCK, Material.DIAMOND_BLOCK, Material.EMERALD_BLOCK, Material.REDSTONE_BLOCK, Material.LAPIS_BLOCK,
+                                  Material.SLIME_BLOCK, Material.SPONGE, Material.NETHER_QUARTZ_ORE, Material.NETHER_WART_BLOCK, Material.DRAGON_EGG, Material.SHULKER_BOX,
+                                  Material.ENCHANTING_TABLE, Material.ANVIL, Material.BEACON, Material.BREWING_STAND, Material.CAKE, Material.JUKEBOX,
+                                  Material.TNT, Material.CREEPER_HEAD, Material.DRAGON_HEAD, Material.PLAYER_HEAD, Material.ZOMBIE_HEAD, Material.SKELETON_SKULL, Material.WITHER_SKELETON_SKULL,
+                                  Material.ENDER_EYE, Material.ENDER_PEARL, Material.FIREWORK_ROCKET, Material.FIRE_CHARGE, Material.POTION, Material.SPLASH_POTION, Material.LINGERING_POTION,
+                                  Material.NETHER_WART, Material.REDSTONE, Material.TRIDENT, Material.DIAMOND_AXE, Material.DIAMOND_BOOTS, Material.DIAMOND_CHESTPLATE,
+                                  Material.DIAMOND_HELMET, Material.DIAMOND_HOE, Material.DIAMOND_LEGGINGS, Material.DIAMOND_PICKAXE, Material.DIAMOND_SHOVEL, Material.DIAMOND_SWORD,
+                                  Material.ELYTRA, Material.ENCHANTED_BOOK, Material.ENCHANTED_GOLDEN_APPLE, Material.GOLDEN_APPLE, Material.IRON_INGOT,
                                   Material.MUSIC_DISC_11, Material.MUSIC_DISC_13, Material.MUSIC_DISC_BLOCKS, Material.MUSIC_DISC_CAT,
                                   Material.MUSIC_DISC_CHIRP, Material.MUSIC_DISC_FAR, Material.MUSIC_DISC_MALL, Material.MUSIC_DISC_MELLOHI,
                                   Material.MUSIC_DISC_STAL, Material.MUSIC_DISC_STRAD, Material.MUSIC_DISC_WAIT, Material.MUSIC_DISC_WARD,
-                                  Material.NAME_TAG,Material.TIPPED_ARROW,Material.TOTEM_OF_UNDYING,Material.SPECTRAL_ARROW,Material.DIAMOND,Material.GOLD_INGOT,
-                                  Material.HEART_OF_THE_SEA,Material.DRAGON_BREATH,Material.EMERALD,Material.NAUTILUS_SHELL,Material.NETHER_STAR,Material.SLIME_BALL,
+                                  Material.NAME_TAG, Material.TIPPED_ARROW, Material.TOTEM_OF_UNDYING, Material.SPECTRAL_ARROW, Material.DIAMOND, Material.GOLD_INGOT,
+                                  Material.HEART_OF_THE_SEA, Material.DRAGON_BREATH, Material.EMERALD, Material.NAUTILUS_SHELL, Material.NETHER_STAR, Material.SLIME_BALL,
                                   Material.RABBIT_FOOT};
     List<Material> valuableItems = Arrays.asList(valuableItems0);
 
@@ -116,13 +118,16 @@ public class Global {
     }
 
     public void gainSoul(Entity entity) {
-        EntityType[] hostileMobs0 = {EntityType.SPIDER,EntityType.CAVE_SPIDER,EntityType.ENDERMAN,EntityType.PIG_ZOMBIE,
-                EntityType.BLAZE,EntityType.CREEPER,EntityType.DROWNED,EntityType.ELDER_GUARDIAN,
-                EntityType.ENDERMITE,EntityType.EVOKER,EntityType.GHAST,EntityType.GUARDIAN,
-                EntityType.HUSK,EntityType.MAGMA_CUBE,EntityType.PHANTOM,EntityType.PILLAGER,
-                EntityType.RAVAGER,EntityType.SHULKER,EntityType.SKELETON,EntityType.SLIME,
-                EntityType.STRAY,EntityType.VEX,EntityType.VINDICATOR,EntityType.WITCH,
-                EntityType.WITHER_SKELETON,EntityType.ZOMBIE,EntityType.ZOMBIE_VILLAGER,EntityType.WITHER,EntityType.ENDER_DRAGON};
+        if (!p.hasPermission("freeRPG.getSouls")) {
+            return;
+        }
+        EntityType[] hostileMobs0 = {EntityType.SPIDER, EntityType.CAVE_SPIDER, EntityType.ENDERMAN,
+                EntityType.BLAZE, EntityType.CREEPER, EntityType.DROWNED, EntityType.ELDER_GUARDIAN,
+                EntityType.ENDERMITE, EntityType.EVOKER, EntityType.GHAST, EntityType.GUARDIAN,
+                EntityType.HUSK, EntityType.MAGMA_CUBE, EntityType.PHANTOM, EntityType.PILLAGER,
+                EntityType.RAVAGER, EntityType.SHULKER, EntityType.SKELETON, EntityType.SLIME,
+                EntityType.STRAY, EntityType.VEX, EntityType.VINDICATOR, EntityType.WITCH,
+                EntityType.WITHER_SKELETON, EntityType.ZOMBIE, EntityType.ZOMBIE_VILLAGER, EntityType.WITHER, EntityType.ENDER_DRAGON};
         List<EntityType> hostileMobs = Arrays.asList(hostileMobs0);
         EntityType entityType = entity.getType();
         if (hostileMobs.contains(entityType)) {
@@ -202,10 +207,10 @@ public class Global {
     }
 
     public void avatar(){
-        PotionEffectType[] positiveEffects0  = {PotionEffectType.DOLPHINS_GRACE,PotionEffectType.LUCK,PotionEffectType.INVISIBILITY,PotionEffectType.NIGHT_VISION,
-                                               PotionEffectType.FIRE_RESISTANCE,PotionEffectType.WATER_BREATHING,PotionEffectType.SPEED,PotionEffectType.JUMP,
-                                               PotionEffectType.ABSORPTION,PotionEffectType.CONDUIT_POWER,PotionEffectType.DAMAGE_RESISTANCE,PotionEffectType.FAST_DIGGING,
-                                               PotionEffectType.HEAL,PotionEffectType.HEALTH_BOOST,PotionEffectType.INCREASE_DAMAGE,PotionEffectType.REGENERATION,
+        PotionEffectType[] positiveEffects0  = {PotionEffectType.DOLPHINS_GRACE, PotionEffectType.LUCK, PotionEffectType.INVISIBILITY, PotionEffectType.NIGHT_VISION,
+                                               PotionEffectType.FIRE_RESISTANCE, PotionEffectType.WATER_BREATHING, PotionEffectType.SPEED, PotionEffectType.JUMP,
+                                               PotionEffectType.ABSORPTION, PotionEffectType.CONDUIT_POWER, PotionEffectType.DAMAGE_RESISTANCE, PotionEffectType.FAST_DIGGING,
+                                               PotionEffectType.HEAL, PotionEffectType.HEALTH_BOOST, PotionEffectType.INCREASE_DAMAGE, PotionEffectType.REGENERATION,
                                                PotionEffectType.SATURATION};
         List<PotionEffectType> positiveEffects = Arrays.asList(positiveEffects0);
         for (PotionEffectType effect : positiveEffects) {

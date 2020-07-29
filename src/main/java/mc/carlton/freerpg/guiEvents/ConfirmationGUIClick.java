@@ -1,8 +1,12 @@
 package mc.carlton.freerpg.guiEvents;
 
 import mc.carlton.freerpg.FreeRPG;
-import mc.carlton.freerpg.perksAndAbilities.*;
+import mc.carlton.freerpg.perksAndAbilities.Agility;
+import mc.carlton.freerpg.perksAndAbilities.Farming;
+import mc.carlton.freerpg.perksAndAbilities.Fishing;
+import mc.carlton.freerpg.perksAndAbilities.Global;
 import mc.carlton.freerpg.playerAndServerInfo.ChangeStats;
+import mc.carlton.freerpg.playerAndServerInfo.ConfigLoad;
 import mc.carlton.freerpg.playerAndServerInfo.PlayerStats;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -105,8 +109,11 @@ public class ConfirmationGUIClick implements Listener {
                     Map<UUID, Map<String, ArrayList<Number>>> statAll = pStatClass.getData();
                     Map<String, ArrayList<Number>> pStatAll = statAll.get(uuid);
                     ArrayList<Number> pStats = pStatAll.get(skillName);
+                    ConfigLoad loadConfig = new ConfigLoad();
+                    ArrayList<Integer> soulsInfo = loadConfig.getSoulsInfo();
+                    int refundCost = (int) soulsInfo.get(1);
                     int souls = (int) pStatAll.get("global").get(20);
-                    if (souls >= 250) {
+                    if (souls >= refundCost) {
 
                         //Ends all tasks that track players' buffs gained from some skills
                         if (skillName.equals("farming") && (int) pStats.get(13) > 0) {
@@ -147,9 +154,9 @@ public class ConfirmationGUIClick implements Listener {
                             refundStat.setStat(skillName, 6, level);
                         }
 
-                        //Remove 250 souls
+                        //Remove the souls
                         Global globalClass = new Global(p);
-                        globalClass.loseSouls(250);
+                        globalClass.loseSouls(refundCost);
                     }
                     else {
                         p.sendMessage(ChatColor.RED + "You need at least 250 souls to refund a skill tree");

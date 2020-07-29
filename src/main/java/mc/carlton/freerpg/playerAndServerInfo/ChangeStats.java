@@ -17,12 +17,14 @@ public class ChangeStats {
     ArrayList<Double> multipliers = new ArrayList<>();
     ArrayList<Double> tokensInfo = new ArrayList<>();
     ArrayList<Double> levelingInfo = new ArrayList<>();
+    ArrayList<Integer> maxLevels = new ArrayList<>();
 
     public ChangeStats(Player p) {
         this.p = p;
         this.pName = p.getDisplayName();
         this.uuid = p.getUniqueId();
         ConfigLoad loadConfig = new ConfigLoad();
+        maxLevels = loadConfig.getMaxLevels();
         multipliers = loadConfig.getMultipliers();
         tokensInfo = loadConfig.getTokensInfo();
         levelingInfo = loadConfig.getLevelingInfo();
@@ -42,7 +44,7 @@ public class ChangeStats {
         return hasPerms;
     }
 
-    public void changeEXP(String skillName,int expChange) {
+    public void changeEXP(String skillName, int expChange) {
         boolean hasPerms = checkPerms(skillName);
         if (!hasPerms) {
             return;
@@ -56,9 +58,23 @@ public class ChangeStats {
             String[] labels_0 = {"digging","woodcutting","mining","farming","fishing","archery","beastMastery","swordsmanship","defense","axeMastery","repair","agility","alchemy","smelting","enchanting","global"};
             List<String> labels_arr = Arrays.asList(labels_0);
             String skillTitle = titles_0[labels_arr.indexOf(skillName)];
+
+            //Multipliers
             if (!isCommand) {
                 expChange = (int) Math.ceil(expChange * (multipliers.get(0)) * (multipliers.get(labels_arr.indexOf(skillName) + 1)) * (globalClass.expBoost(skillName))); //multiplies exp by global multiplier
             }
+
+            //Get Corresponding maxLevel
+            int maxLevel = (int) maxLevels.get(labels_arr.indexOf(skillName) + 1);
+            if (maxLevel == -1) {
+                maxLevel = maxLevels.get(0);
+                if (maxLevel == - 1) {
+                    maxLevel = Integer.MAX_VALUE;
+                }
+            }
+
+
+
             //TokensInfo
             double autoPassive = tokensInfo.get(0);
             double levelsPerPassive = tokensInfo.get(1);
@@ -80,6 +96,11 @@ public class ChangeStats {
             int tokens_P = (int)pStats.get(2);
             int tokens_G = (int)pGlobalStats.get(1);
 
+            //If currently level is already maxed, do nothing
+            if (oldLevel >= maxLevel) {
+                return;
+            }
+
             // set new stats
             exp += expChange;
             int level = 0;
@@ -88,15 +109,20 @@ public class ChangeStats {
             int newTokens_G = 0;
             level = getLevelfromEXP(exp);
 
+            //if new level is greater than the max level, set it to the max level
+            if (level >= maxLevel) {
+                level = maxLevel;
+            }
+
             int levelChange = level - oldLevel;
             int globalLevel = oldGlobalLevel + levelChange;
             if (levelChange > 0) {
-                int oldLevel_s = (int)Math.floor(oldLevel/levelsPerSkill);
+                int oldLevel_s = (int) Math.floor(oldLevel/levelsPerSkill);
                 int level_s = (int) Math.floor(level/levelsPerSkill);
-                int oldLevel_g = (int)Math.floor(oldGlobalLevel/levelsPerGlobal);
+                int oldLevel_g = (int) Math.floor(oldGlobalLevel/levelsPerGlobal);
                 int level_g = (int) Math.floor(globalLevel/levelsPerGlobal);
                 if (!skillName.equals("repair") && !skillName.equals("agility") && !skillName.equals("alchemy") && !skillName.equals("smelting") && !skillName.equals("enchanting")) {
-                    int oldLevel_p = (int)Math.floor(oldLevel/levelsPerPassive);
+                    int oldLevel_p = (int) Math.floor(oldLevel/levelsPerPassive);
                     int level_p = (int) Math.floor(level/levelsPerPassive);
                     newTokens_P = level_p-oldLevel_p;
                 }
@@ -147,7 +173,7 @@ public class ChangeStats {
                 pStats.set(2, tokens_P);
                 pStats.set(3, tokens_S);
                 int autoPassivesChange = 0;
-                int oldLevel_auto_p = (int)Math.floor(oldLevel/autoPassive);
+                int oldLevel_auto_p = (int) Math.floor(oldLevel/autoPassive);
                 int level_auto_p = (int) Math.floor(level/autoPassive);
                 autoPassivesChange = level_auto_p-oldLevel_auto_p;
                 pStats.set(4, (int) pStats.get(4) + autoPassivesChange);
@@ -203,7 +229,7 @@ public class ChangeStats {
         return level;
     }
 
-    public void increaseTokens(String skillName,String type,int amount) {
+    public void increaseTokens(String skillName, String type, int amount) {
         //Get stats
         PlayerStats pStatClass = new PlayerStats(p);
         Map<UUID, Map<String, ArrayList<Number>>> statAll = pStatClass.getData();
@@ -234,7 +260,7 @@ public class ChangeStats {
         pStatClass.setData(statAll);
     }
 
-    public void changeStat(String skillName,int statIndex, int valueChange) {
+    public void changeStat(String skillName, int statIndex, int valueChange) {
         //Get stats
         PlayerStats pStatClass = new PlayerStats(p);
         Map<UUID, Map<String, ArrayList<Number>>> statAll = pStatClass.getData();
@@ -251,7 +277,7 @@ public class ChangeStats {
         pStatClass.setData(statAll);
     }
 
-    public void setStat(String skillName,int statIndex, int newValue ) {
+    public void setStat(String skillName, int statIndex, int newValue ) {
         //Get stats
         PlayerStats pStatClass = new PlayerStats(p);
         Map<UUID, Map<String, ArrayList<Number>>> statAll = pStatClass.getData();
