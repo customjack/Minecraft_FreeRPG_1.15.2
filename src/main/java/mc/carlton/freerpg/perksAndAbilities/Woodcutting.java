@@ -23,7 +23,7 @@ public class Woodcutting {
     private Player p;
     private String pName;
     private ItemStack itemInHand;
-    private Map<Enchantment,Integer> enchantmentLevelMap = new HashMap<>();
+    private Map<Enchantment, Integer> enchantmentLevelMap = new HashMap<>();
 
     ChangeStats increaseStats; //Changing Stats
 
@@ -41,13 +41,13 @@ public class Woodcutting {
 
     Random rand = new Random(); //Random class Import
 
-    Material[] logs0 = {Material.ACACIA_LOG,Material.BIRCH_LOG,Material.DARK_OAK_LOG,Material.OAK_LOG,Material.SPRUCE_LOG,Material.JUNGLE_LOG};
+    Material[] logs0 = {Material.ACACIA_LOG, Material.BIRCH_LOG, Material.DARK_OAK_LOG, Material.OAK_LOG, Material.SPRUCE_LOG, Material.JUNGLE_LOG};
     List<Material> logs = Arrays.asList(logs0);
-    Material[] strippedLogs0 = {Material.STRIPPED_SPRUCE_LOG,Material.STRIPPED_OAK_LOG,Material.STRIPPED_JUNGLE_LOG,Material.STRIPPED_DARK_OAK_LOG,Material.STRIPPED_BIRCH_LOG,Material.STRIPPED_ACACIA_LOG};
+    Material[] strippedLogs0 = {Material.STRIPPED_SPRUCE_LOG, Material.STRIPPED_OAK_LOG, Material.STRIPPED_JUNGLE_LOG, Material.STRIPPED_DARK_OAK_LOG, Material.STRIPPED_BIRCH_LOG, Material.STRIPPED_ACACIA_LOG};
     List<Material> strippedLogs = Arrays.asList(strippedLogs0);
-    Material[] leaves0 = {Material.ACACIA_LEAVES,Material.BIRCH_LEAVES,Material.DARK_OAK_LEAVES,Material.OAK_LEAVES,Material.SPRUCE_LEAVES,Material.JUNGLE_LEAVES};
+    Material[] leaves0 = {Material.ACACIA_LEAVES, Material.BIRCH_LEAVES, Material.DARK_OAK_LEAVES, Material.OAK_LEAVES, Material.SPRUCE_LEAVES, Material.JUNGLE_LEAVES};
     List<Material> leaves = Arrays.asList(leaves0);
-    Material[] axes0 = {Material.DIAMOND_AXE,Material.GOLDEN_AXE,Material.IRON_AXE, Material.STONE_AXE,Material.WOODEN_AXE};
+    Material[] axes0 = {Material.DIAMOND_AXE, Material.GOLDEN_AXE, Material.IRON_AXE, Material.STONE_AXE, Material.WOODEN_AXE};
     List<Material> axes = Arrays.asList(axes0);
 
     ArrayList<Block> timberLogs = new ArrayList<Block>();
@@ -177,6 +177,7 @@ public class Woodcutting {
         }.runTaskLater(plugin, duration);
     }
     public void getTimberLogs(Block b1, final int x1, final int z1) {
+        WorldGuardChecks BuildingCheck = new WorldGuardChecks();
         int searchSquareSize = 7;
         for (int x = -1; x <= 1; x++) {
             for (int y = 0; y <= 1; y++) {
@@ -190,8 +191,10 @@ public class Woodcutting {
                             break;
                         }
                         else if (!(timberLogs.contains(b2))) {
-                            timberLogs.add(b2);
-                            this.getTimberLogs(b2, x1, z1);
+                            if (BuildingCheck.canBuild(p, b2.getLocation())) {
+                                timberLogs.add(b2);
+                                this.getTimberLogs(b2, x1, z1);
+                            }
                         }
                     }
                 }
@@ -270,7 +273,7 @@ public class Woodcutting {
                     meta.addStoredEnchant(randomEnchant,randomLevel,true);
                     enchantedBook.setItemMeta(meta);
                     if (randomEnchant == Enchantment.BINDING_CURSE || randomEnchant == Enchantment.VANISHING_CURSE) {
-                        Map<Enchantment,Integer> enchantmentLevelMapGood = enchantmentLevelMap;
+                        Map<Enchantment, Integer> enchantmentLevelMapGood = enchantmentLevelMap;
                         enchantmentLevelMapGood.remove(Enchantment.BINDING_CURSE);
                         enchantmentLevelMapGood.remove(Enchantment.VANISHING_CURSE);
                         keysAsArray = new ArrayList<Enchantment>(enchantmentLevelMapGood.keySet());
@@ -299,12 +302,12 @@ public class Woodcutting {
             ((ExperienceOrb)world.spawn(initialBlock.getLocation(), ExperienceOrb.class)).setExperience(xpDrop);
 
         }
-        increaseStats.changeEXP("woodcutting",120*numLogs);
+        increaseStats.changeEXP("woodcutting", 120 * numLogs);
         timberLogs.clear();
 
     }
     public void woodcuttingDoubleDrop(Block block, World world) {
-        Material[] planks0 = {Material.ACACIA_PLANKS,Material.BIRCH_PLANKS,Material.DARK_OAK_PLANKS,Material.JUNGLE_PLANKS,Material.OAK_PLANKS,Material.SPRUCE_PLANKS};
+        Material[] planks0 = {Material.ACACIA_PLANKS, Material.BIRCH_PLANKS, Material.DARK_OAK_PLANKS, Material.JUNGLE_PLANKS, Material.OAK_PLANKS, Material.SPRUCE_PLANKS};
         List<Material> planks = Arrays.asList(planks0);
         if (planks.contains(block.getType())) {
             return;
@@ -320,7 +323,7 @@ public class Woodcutting {
         }
     }
 
-    public void logXPdrop(Block block,World world) {
+    public void logXPdrop(Block block, World world) {
         if (logs.contains(block.getType())) {
             Map<String, ArrayList<Number>> pStat = pStatClass.getPlayerData();
             int zealousRootsLevel = (int) pStat.get("woodcutting").get(7);
@@ -346,7 +349,7 @@ public class Woodcutting {
                 meta.addStoredEnchant(randomEnchant,randomLevel,true);
                 enchantedBook.setItemMeta(meta);
                 if (randomEnchant == Enchantment.BINDING_CURSE || randomEnchant == Enchantment.VANISHING_CURSE) {
-                    Map<Enchantment,Integer> enchantmentLevelMapGood = enchantmentLevelMap;
+                    Map<Enchantment, Integer> enchantmentLevelMapGood = enchantmentLevelMap;
                     enchantmentLevelMapGood.remove(Enchantment.BINDING_CURSE);
                     enchantmentLevelMapGood.remove(Enchantment.VANISHING_CURSE);
                     keysAsArray = new ArrayList<Enchantment>(enchantmentLevelMapGood.keySet());
@@ -436,6 +439,10 @@ public class Woodcutting {
     }
     public void leafBlower(Block block, World world) {
         if (leaves.contains(block.getType()) && axes.contains(itemInHand.getType())) {
+            WorldGuardChecks BuildingCheck = new WorldGuardChecks();
+            if (!BuildingCheck.canBuild(p, block.getLocation())) {
+                return;
+            }
             increaseStats.changeEXP("woodcutting",35);
             Map<String, ArrayList<Number>> pStat = pStatClass.getPlayerData();
             int leafLevel = (int) pStat.get("woodcutting").get(12);

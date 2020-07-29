@@ -36,8 +36,8 @@ public class Mining {
     PlacedBlocks placedClass;
     //GET TRACKED BLOCKS LIKE THIS:        ArrayList<Location> blocksLocations = placedClass.getBlocks();
 
-    Material[] ores0 = {Material.REDSTONE_ORE,Material.NETHER_QUARTZ_ORE,Material.LAPIS_ORE,Material.IRON_ORE,Material.GOLD_ORE,
-                        Material.EMERALD_ORE,Material.DIAMOND_ORE,Material.COAL_ORE};
+    Material[] ores0 = {Material.REDSTONE_ORE, Material.NETHER_QUARTZ_ORE, Material.LAPIS_ORE, Material.IRON_ORE, Material.GOLD_ORE,
+                        Material.EMERALD_ORE, Material.DIAMOND_ORE, Material.COAL_ORE};
     List<Material> ores = Arrays.asList(ores0);
 
     Random rand = new Random(); //Random class Import
@@ -239,7 +239,7 @@ public class Mining {
         }
     }
 
-    public void preventLogoutTheft(int taskID_mining,ItemStack itemInHand_mining) {
+    public void preventLogoutTheft(int taskID_mining, ItemStack itemInHand_mining) {
         Map<String, ArrayList<Number>> pStat = pStatClass.getPlayerData();
         Integer[] pAbilities = abilities.getPlayerAbilities();
         if (pAbilities[2] == -2) {
@@ -255,7 +255,7 @@ public class Mining {
             }
             int finalCooldown = cooldown;
             abilities.setPlayerAbility( "mining", -1);
-            p.sendMessage(ChatColor.RED+ChatColor.BOLD.toString() + ">>>A magic force ends your ability<<<");
+            p.sendMessage(ChatColor.RED+ ChatColor.BOLD.toString() + ">>>A magic force ends your ability<<<");
             for(int i = 1; i < finalCooldown+1; i++) {
                 int timeRemaining = finalCooldown - i;
                 new BukkitRunnable() {
@@ -273,7 +273,8 @@ public class Mining {
         }
     }
 
-    public void getVeinOres(Block b1,final int x1, final int y1, final int z1) {
+    public void getVeinOres(Block b1, final int x1, final int y1, final int z1) {
+        WorldGuardChecks BuildingCheck = new WorldGuardChecks();
         int searchCubeSize = 7;
         Material ore = b1.getType();
         for (int x = -1; x <= 1; x++) {
@@ -288,8 +289,10 @@ public class Mining {
                             break;
                         }
                         else if (!(veinOres.contains(b2))) {
-                            veinOres.add(b2);
-                            this.getVeinOres(b2, x1,y1,z1);
+                            if (BuildingCheck.canBuild(p, b2.getLocation())) {
+                                veinOres.add(b2);
+                                this.getVeinOres(b2, x1, y1, z1);
+                            }
                         }
                     }
                 }
@@ -297,8 +300,8 @@ public class Mining {
         }
     }
 
-    public void veinMiner(Block initialBlock) {
-        if (!(ores.contains(initialBlock.getType()))) {
+    public void veinMiner(Block initialBlock, Material blockType) {
+        if (!(ores.contains(blockType))) {
             return;
         }
         World world = initialBlock.getWorld();

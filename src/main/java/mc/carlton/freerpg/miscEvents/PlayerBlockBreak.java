@@ -22,6 +22,18 @@ public class PlayerBlockBreak implements Listener {
     void onblockBreak(BlockBreakEvent e){
         Plugin plugin = FreeRPG.getPlugin(FreeRPG.class);
 
+        Player p = e.getPlayer();
+        Block block = e.getBlock();
+        Location loc = block.getLocation();
+        World world = e.getBlock().getWorld();
+        Material blockType = block.getType();
+
+        //WorldGuard Check
+        WorldGuardChecks BuildingCheck = new WorldGuardChecks();
+        if (!BuildingCheck.canBuild(p, loc)) {
+            return;
+        }
+
         // Tools and Other
         Material[] pickaxes0 = {Material.DIAMOND_PICKAXE,Material.GOLDEN_PICKAXE,Material.IRON_PICKAXE, Material.STONE_PICKAXE,Material.WOODEN_PICKAXE};
         List<Material> pickaxes = Arrays.asList(pickaxes0);
@@ -172,15 +184,11 @@ public class PlayerBlockBreak implements Listener {
         flamePickEXP.put(Material.ACACIA_LOG,new Object[]{"woodcutting",200});
 
 
-        Player p = e.getPlayer();
+
         if (p.getGameMode() == GameMode.CREATIVE) {
             return;
         }
-        Block block = e.getBlock();
 
-        Location loc = block.getLocation();
-        World world = e.getBlock().getWorld();
-        Material blockType = block.getType();
 
 
         ChangeStats increaseStats = new ChangeStats(p);
@@ -218,7 +226,7 @@ public class PlayerBlockBreak implements Listener {
                 Mining miningClass = new Mining(p);
                 miningClass.wastelessHaste();
                 if (veinMinerLevel > 0 && veinMinerToggle > 0) {
-                    miningClass.veinMiner(block);
+                    miningClass.veinMiner(block,blockType);
                 }
             }
             else {
@@ -233,13 +241,13 @@ public class PlayerBlockBreak implements Listener {
                                           Material.DIRT,Material.RED_SAND,Material.SAND,Material.SOUL_SAND,Material.SNOW_BLOCK};
             List<Material> treasureBlocks = Arrays.asList(treasureBlocks0);
             Digging diggingClass = new Digging(p);
-            boolean dropFlint = diggingClass.flintFinder(world,block);
+            boolean dropFlint = diggingClass.flintFinder(blockType);
             if (dropFlint) {
                 e.setDropItems(false);
                 world.dropItemNaturally(loc,new ItemStack(Material.FLINT,1));
             }
             if (treasureBlocks.contains(blockType)) {
-                diggingClass.diggingTreasureDrop(world,loc,block);
+                diggingClass.diggingTreasureDrop(world,loc,blockType);
             }
 
         }
@@ -268,7 +276,7 @@ public class PlayerBlockBreak implements Listener {
             if (ores.contains(blockType)) {
                 miningClass.wastelessHaste();
                 miningClass.miningDoubleDrop(block, world);
-                miningClass.veinMiner(block);
+                miningClass.veinMiner(block,blockType);
 
             }
             if (blockType == Material.SPAWNER) {
