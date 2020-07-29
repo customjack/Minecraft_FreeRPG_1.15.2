@@ -6,7 +6,6 @@ import mc.carlton.freerpg.perksAndAbilities.*;
 import mc.carlton.freerpg.playerAndServerInfo.AbilityTracker;
 import mc.carlton.freerpg.playerAndServerInfo.ChangeStats;
 import mc.carlton.freerpg.playerAndServerInfo.PlayerStats;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attributable;
 import org.bukkit.attribute.Attribute;
@@ -28,9 +27,9 @@ public class EntityHitEntity implements Listener {
         if (e.getDamager() instanceof Player) {
             Material[] shovels0 = {Material.DIAMOND_SHOVEL, Material.GOLDEN_SHOVEL, Material.IRON_SHOVEL, Material.STONE_SHOVEL, Material.WOODEN_SHOVEL};
             List<Material> shovels = Arrays.asList(shovels0);
-            Material[] swords0 = {Material.WOODEN_SWORD,Material.STONE_SWORD,Material.GOLDEN_SWORD,Material.DIAMOND_SWORD,Material.IRON_SWORD};
+            Material[] swords0 = {Material.WOODEN_SWORD, Material.STONE_SWORD, Material.GOLDEN_SWORD, Material.DIAMOND_SWORD, Material.IRON_SWORD};
             List<Material> swords = Arrays.asList(swords0);
-            Material[] axes0 = {Material.DIAMOND_AXE,Material.GOLDEN_AXE,Material.IRON_AXE, Material.STONE_AXE,Material.WOODEN_AXE};
+            Material[] axes0 = {Material.DIAMOND_AXE, Material.GOLDEN_AXE, Material.IRON_AXE, Material.STONE_AXE, Material.WOODEN_AXE};
             List<Material> axes = Arrays.asList(axes0);
 
             Player p = (Player) e.getDamager();
@@ -185,7 +184,7 @@ public class EntityHitEntity implements Listener {
         }
         //Wolf take damage EXP
         else if (e.getEntity() instanceof Entity) {
-            if (!(e.getDamager() instanceof  Player)) {
+            if (!(e.getDamager() instanceof Player)) {
                 Entity wolf = e.getEntity();
                 if (wolf.getType() == EntityType.WOLF) {
                     Tameable dog = (Tameable) wolf;
@@ -204,7 +203,6 @@ public class EntityHitEntity implements Listener {
             Agility agilityClass = new Agility(p);
             boolean dodge = agilityClass.dodge(e.getFinalDamage());
             if (dodge) {
-                p.sendMessage(ChatColor.GREEN + ">>>DODGE<<<");
                 e.setCancelled(true);
             }
             Defense defenseClass = new Defense(p);

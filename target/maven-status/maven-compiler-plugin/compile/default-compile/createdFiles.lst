@@ -43,6 +43,7 @@ mc\carlton\freerpg\clickEvents\PlayerRightClick$2.class
 mc\carlton\freerpg\combatEvents\EntityHitEntity$1.class
 mc\carlton\freerpg\perksAndAbilities\Fishing$1.class
 mc\carlton\freerpg\perksAndAbilities\Swordsmanship$2$1.class
+mc\carlton\freerpg\gameTools\ActionBarMessages.class
 mc\carlton\freerpg\brewingEvents\FinishedBrewing.class
 mc\carlton\freerpg\playerAndServerInfo\ChangeStats.class
 mc\carlton\freerpg\perksAndAbilities\BeastMastery.class

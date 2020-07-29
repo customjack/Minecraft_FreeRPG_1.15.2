@@ -1,6 +1,7 @@
 package mc.carlton.freerpg.perksAndAbilities;
 
 import mc.carlton.freerpg.FreeRPG;
+import mc.carlton.freerpg.gameTools.ActionBarMessages;
 import mc.carlton.freerpg.playerAndServerInfo.*;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -9,7 +10,10 @@ import org.bukkit.block.data.Ageable;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Levelled;
 import org.bukkit.block.data.type.Cocoa;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.Sheep;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -26,8 +30,8 @@ public class Farming {
     private String pName;
     private ItemStack itemInHand;
     ChangeStats increaseStats; //Changing Stats
-    static Map<Player,Integer> oneWithNatureMap = new HashMap<>();
-    static Map<Player,Integer> oneWithNatureCounters = new HashMap<>();
+    static Map<Player, Integer> oneWithNatureMap = new HashMap<>();
+    static Map<Player, Integer> oneWithNatureCounters = new HashMap<>();
 
     AbilityTracker abilities; //Abilities class
     // GET ABILITY STATUSES LIKE THIS:   Integer[] pAbilities = abilities.getPlayerAbilities(p);
@@ -41,32 +45,34 @@ public class Farming {
     PlacedBlocks placedClass;
     //GET TRACKED BLOCKS LIKE THIS:        ArrayList<Location> blocksLocations = placedClass.getBlocks();
 
+    ActionBarMessages actionMessage;
+
     Random rand = new Random(); //Random class Import
 
-    Material[] crops0 = {Material.WHEAT,Material.BEETROOTS,Material.CARROTS,Material.CHORUS_FLOWER,Material.MELON_STEM,Material.MELON,
-                         Material.NETHER_WART,Material.POTATOES,Material.PUMPKIN_STEM,Material.PUMPKIN,Material.SWEET_BERRY_BUSH,Material.COCOA};
+    Material[] crops0 = {Material.WHEAT, Material.BEETROOTS, Material.CARROTS, Material.CHORUS_FLOWER, Material.MELON_STEM, Material.MELON,
+                         Material.NETHER_WART, Material.POTATOES, Material.PUMPKIN_STEM, Material.PUMPKIN, Material.SWEET_BERRY_BUSH, Material.COCOA};
     List<Material> crops = Arrays.asList(crops0);
-    Material[] tallCrops0 = {Material.SUGAR_CANE,Material.BAMBOO,Material.CACTUS,Material.KELP,Material.KELP_PLANT};
+    Material[] tallCrops0 = {Material.SUGAR_CANE, Material.BAMBOO, Material.CACTUS, Material.KELP, Material.KELP_PLANT};
     List<Material> tallCrops = Arrays.asList(tallCrops0);
-    EntityType[] animals0 = {EntityType.CHICKEN,EntityType.COW,EntityType.DONKEY,EntityType.FOX,EntityType.HORSE,EntityType.MUSHROOM_COW,
-                            EntityType.MULE,EntityType.PARROT,EntityType.PIG,EntityType.RABBIT,EntityType.SHEEP,EntityType.SQUID,
-                            EntityType.SKELETON_HORSE,EntityType.TURTLE};
+    EntityType[] animals0 = {EntityType.CHICKEN, EntityType.COW, EntityType.DONKEY, EntityType.FOX, EntityType.HORSE, EntityType.MUSHROOM_COW,
+                            EntityType.MULE, EntityType.PARROT, EntityType.PIG, EntityType.RABBIT, EntityType.SHEEP, EntityType.SQUID,
+                            EntityType.SKELETON_HORSE, EntityType.TURTLE};
     List<EntityType> animals = Arrays.asList(animals0);
-    EntityType[] babyAnimals0 = {EntityType.MUSHROOM_COW,EntityType.COW,EntityType.SHEEP,EntityType.PIG,EntityType.CHICKEN,EntityType.RABBIT,
-                                EntityType.WOLF,EntityType.CAT,EntityType.OCELOT,EntityType.LLAMA,EntityType.POLAR_BEAR,
-                                EntityType.HORSE,EntityType.DONKEY,EntityType.MULE,EntityType.SKELETON_HORSE,EntityType.TURTLE,
-                                EntityType.PANDA,EntityType.FOX,EntityType.BEE};
+    EntityType[] babyAnimals0 = {EntityType.MUSHROOM_COW, EntityType.COW, EntityType.SHEEP, EntityType.PIG, EntityType.CHICKEN, EntityType.RABBIT,
+                                EntityType.WOLF, EntityType.CAT, EntityType.OCELOT, EntityType.LLAMA, EntityType.POLAR_BEAR,
+                                EntityType.HORSE, EntityType.DONKEY, EntityType.MULE, EntityType.SKELETON_HORSE, EntityType.TURTLE,
+                                EntityType.PANDA, EntityType.FOX, EntityType.BEE};
     List<EntityType> babyAnimals = Arrays.asList(babyAnimals0);
-    Material[] hoes0 = {Material.DIAMOND_HOE,Material.GOLDEN_HOE,Material.IRON_HOE, Material.STONE_HOE,Material.WOODEN_HOE};
+    Material[] hoes0 = {Material.DIAMOND_HOE, Material.GOLDEN_HOE, Material.IRON_HOE, Material.STONE_HOE, Material.WOODEN_HOE};
     List<Material> hoes = Arrays.asList(hoes0);
-    EntityType[] breedingAnimals0 = {EntityType.MUSHROOM_COW,EntityType.COW,EntityType.SHEEP,EntityType.PIG,EntityType.CHICKEN,EntityType.RABBIT,
-                                    EntityType.TURTLE, EntityType.PANDA,EntityType.FOX,EntityType.BEE};
+    EntityType[] breedingAnimals0 = {EntityType.MUSHROOM_COW, EntityType.COW, EntityType.SHEEP, EntityType.PIG, EntityType.CHICKEN, EntityType.RABBIT,
+                                    EntityType.TURTLE, EntityType.PANDA, EntityType.FOX, EntityType.BEE};
     List<EntityType> breedingAnimals = Arrays.asList(breedingAnimals0);
 
-    Map<Material,Integer> farmFood = new HashMap<Material,Integer>();
-    Map<Material,Integer> meatFood = new HashMap<Material,Integer>();
-    Map<Material,Double> farmFoodSaturation = new HashMap<Material,Double>();
-    Map<Material,Double> meatFoodSaturation = new HashMap<Material,Double>();
+    Map<Material, Integer> farmFood = new HashMap<Material, Integer>();
+    Map<Material, Integer> meatFood = new HashMap<Material, Integer>();
+    Map<Material, Double> farmFoodSaturation = new HashMap<Material, Double>();
+    Map<Material, Double> meatFoodSaturation = new HashMap<Material, Double>();
 
 
     public Farming(Player p) {
@@ -78,6 +84,7 @@ public class Farming {
         this.timers = new AbilityTimers(p);
         this.pStatClass=  new PlayerStats(p);
         this.placedClass = new PlacedBlocks();
+        this.actionMessage = new ActionBarMessages(p);
 
         farmFood.put(Material.GOLDEN_APPLE,4);
         farmFoodSaturation.put(Material.GOLDEN_APPLE,13.6);
@@ -153,13 +160,13 @@ public class Farming {
             if (cooldown < 1) {
                 int prepMessages = (int) pStatClass.getPlayerData().get("global").get(22); //Toggle for preparation messages
                 if (prepMessages > 0) {
-                    p.sendMessage(ChatColor.GRAY + ">>>You prepare your hoe...<<<");
+                    actionMessage.sendMessage(ChatColor.GRAY + ">>>You prepare your hoe...<<<");
                 }
                 int taskID = new BukkitRunnable() {
                     @Override
                     public void run() {
                         if (prepMessages > 0) {
-                            p.sendMessage(ChatColor.GRAY + ">>>...You rest your hoe<<<");
+                            actionMessage.sendMessage(ChatColor.GRAY + ">>>...You rest your hoe<<<");
                         }
                         try {
                             abilities.setPlayerAbility( "farming", -1);
@@ -171,7 +178,7 @@ public class Farming {
                 }.runTaskLater(plugin, 20 * 4).getTaskId();
                 abilities.setPlayerAbility( "farming", taskID);
             } else {
-                p.sendMessage(ChatColor.RED + "You must wait " + cooldown + " seconds to use Natural Regeneration again.");
+                actionMessage.sendMessage(ChatColor.RED + "You must wait " + cooldown + " seconds to use Natural Regeneration again.");
             }
         }
     }
@@ -179,7 +186,7 @@ public class Farming {
     public void enableAbility() {
         Integer[] pAbilities = abilities.getPlayerAbilities();
         Map<String, ArrayList<Number>> pStat = pStatClass.getPlayerData();
-        p.sendMessage(ChatColor.GREEN + ChatColor.BOLD.toString() + ">>>Natural Regeneration Activated!<<<");
+        actionMessage.sendMessage(ChatColor.GREEN + ChatColor.BOLD.toString() + ">>>Natural Regeneration Activated!<<<");
         int durationLevel = (int) pStat.get("farming").get(4);
         double duration0 = Math.ceil(durationLevel * 0.4) + 40;
         int cooldown = 300;
@@ -194,7 +201,7 @@ public class Farming {
         int taskID = new BukkitRunnable() {
             @Override
             public void run() {
-                p.sendMessage(ChatColor.RED + ChatColor.BOLD.toString() + ">>>Natural Regeneration has ended<<<");
+                actionMessage.sendMessage(ChatColor.RED + ChatColor.BOLD.toString() + ">>>Natural Regeneration has ended<<<");
                 abilities.setPlayerAbility( "farming", -1);
                 for (int i = 1; i < finalCooldown+1; i++) {
                     int timeRemaining = finalCooldown - i;
@@ -208,7 +215,7 @@ public class Farming {
                                     timers2.removePlayer();
                                 }
                                 else {
-                                    p.sendMessage(ChatColor.GREEN + ">>>Natural Regeneration is ready to use again<<<");
+                                    actionMessage.sendMessage(ChatColor.GREEN + ">>>Natural Regeneration is ready to use again<<<");
                                 }
                             }
                         }
@@ -219,7 +226,7 @@ public class Farming {
     }
 
     public void killFarmAnimalEXP(Entity animal) {
-        Map<EntityType,Integer> farmAnimalsEXP = new HashMap<>();
+        Map<EntityType, Integer> farmAnimalsEXP = new HashMap<>();
         farmAnimalsEXP.put(EntityType.SHEEP,100);
         farmAnimalsEXP.put(EntityType.COW,100);
         farmAnimalsEXP.put(EntityType.CHICKEN,100);
@@ -383,7 +390,7 @@ public class Farming {
         }
     }
 
-    public void animalDoubleDrops(Entity entity, World world,List<ItemStack> drops) {
+    public void animalDoubleDrops(Entity entity, World world, List<ItemStack> drops) {
         Map<String, ArrayList<Number>> pStat = pStatClass.getPlayerData();
         int doubleDropsAnimals = (int) pStat.get("farming").get(6);
         double doubleDropChance = doubleDropsAnimals*0.0005;
@@ -484,13 +491,13 @@ public class Farming {
         Material foodType = food.getType();
         if (farmFood.containsKey(food.getType())) {
             double foodMultiplier = farmDietLevel*0.2;
-            p.setFoodLevel((int)Math.min(20,p.getFoodLevel() + Math.round(foodMultiplier * farmFood.get(foodType)) ));
-            p.setSaturation((float)Math.min(p.getFoodLevel(),p.getSaturation()+(foodMultiplier*farmFoodSaturation.get(foodType)) ));
+            p.setFoodLevel((int) Math.min(20,p.getFoodLevel() + Math.round(foodMultiplier * farmFood.get(foodType)) ));
+            p.setSaturation((float) Math.min(p.getFoodLevel(),p.getSaturation()+(foodMultiplier*farmFoodSaturation.get(foodType)) ));
         }
         else if (meatFood.containsKey(food.getType())) {
             double foodMultiplier = meatEaterLevel*0.2;
-            p.setFoodLevel((int)Math.min(20, p.getFoodLevel()+Math.round(foodMultiplier*meatFood.get(foodType)) ));
-            p.setSaturation((float)Math.min(p.getFoodLevel(),p.getSaturation()+(foodMultiplier*meatFoodSaturation.get(foodType)) ));
+            p.setFoodLevel((int) Math.min(20, p.getFoodLevel()+ Math.round(foodMultiplier*meatFood.get(foodType)) ));
+            p.setSaturation((float) Math.min(p.getFoodLevel(),p.getSaturation()+(foodMultiplier*meatFoodSaturation.get(foodType)) ));
         }
     }
 
@@ -619,7 +626,7 @@ public class Farming {
 
     }
 
-    public void shearSheep(Entity entity,World world) {
+    public void shearSheep(Entity entity, World world) {
         if (!(entity instanceof Sheep)) {
             return;
         }

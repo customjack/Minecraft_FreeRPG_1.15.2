@@ -1,6 +1,7 @@
 package mc.carlton.freerpg.perksAndAbilities;
 
 import mc.carlton.freerpg.FreeRPG;
+import mc.carlton.freerpg.gameTools.ActionBarMessages;
 import mc.carlton.freerpg.playerAndServerInfo.*;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -35,20 +36,22 @@ public class Swordsmanship {
     PlayerStats pStatClass;
     //GET PLAYER STATS LIKE THIS:        Map<String, ArrayList<Number>> pStat = pStatClass.getPlayerData(p);
 
+    ActionBarMessages actionMessage;
+
     Random rand = new Random(); //Random class Import
-    EntityType[] hostileMobs0 = {EntityType.SPIDER,EntityType.CAVE_SPIDER,EntityType.ENDERMAN,EntityType.PIG_ZOMBIE,
-                                 EntityType.BLAZE,EntityType.CREEPER,EntityType.DROWNED,EntityType.ELDER_GUARDIAN,
-                                 EntityType.ENDERMITE,EntityType.EVOKER,EntityType.GHAST,EntityType.GUARDIAN,
-                                 EntityType.HUSK,EntityType.MAGMA_CUBE,EntityType.PHANTOM,EntityType.PILLAGER,
-                                 EntityType.RAVAGER,EntityType.SHULKER,EntityType.SKELETON,EntityType.SLIME,
-                                 EntityType.STRAY,EntityType.VEX,EntityType.VINDICATOR,EntityType.WITCH,
-                                 EntityType.WITHER_SKELETON,EntityType.ZOMBIE,EntityType.ZOMBIE_VILLAGER};
+    EntityType[] hostileMobs0 = {EntityType.SPIDER, EntityType.CAVE_SPIDER, EntityType.ENDERMAN, EntityType.PIG_ZOMBIE,
+            EntityType.BLAZE, EntityType.CREEPER, EntityType.DROWNED, EntityType.ELDER_GUARDIAN,
+            EntityType.ENDERMITE, EntityType.EVOKER, EntityType.GHAST, EntityType.GUARDIAN,
+            EntityType.HUSK, EntityType.MAGMA_CUBE, EntityType.PHANTOM, EntityType.PILLAGER,
+            EntityType.RAVAGER, EntityType.SHULKER, EntityType.SKELETON, EntityType.SLIME,
+            EntityType.STRAY, EntityType.VEX, EntityType.VINDICATOR, EntityType.WITCH,
+            EntityType.WITHER_SKELETON, EntityType.ZOMBIE, EntityType.ZOMBIE_VILLAGER};
     List<EntityType> hostileMobs = Arrays.asList(hostileMobs0);
-    EntityType[] thirstMobs0 = {EntityType.PIG_ZOMBIE, EntityType.DROWNED,EntityType.ELDER_GUARDIAN, EntityType.EVOKER,EntityType.GUARDIAN,
-                                EntityType.HUSK,EntityType.PILLAGER, EntityType.RAVAGER, EntityType.VINDICATOR,EntityType.WITCH, EntityType.ZOMBIE,EntityType.ZOMBIE_VILLAGER};
+    EntityType[] thirstMobs0 = {EntityType.PIG_ZOMBIE, EntityType.DROWNED, EntityType.ELDER_GUARDIAN, EntityType.EVOKER, EntityType.GUARDIAN,
+                                EntityType.HUSK, EntityType.PILLAGER, EntityType.RAVAGER, EntityType.VINDICATOR, EntityType.WITCH, EntityType.ZOMBIE, EntityType.ZOMBIE_VILLAGER,};
     List<EntityType> thirstMobs = Arrays.asList(thirstMobs0);
 
-    Material[] swords0 = {Material.WOODEN_SWORD,Material.STONE_SWORD,Material.GOLDEN_SWORD,Material.DIAMOND_SWORD,Material.IRON_SWORD};
+    Material[] swords0 = {Material.WOODEN_SWORD, Material.STONE_SWORD, Material.GOLDEN_SWORD, Material.DIAMOND_SWORD, Material.IRON_SWORD};
     List<Material> swords = Arrays.asList(swords0);
 
     public Swordsmanship(Player p) {
@@ -59,6 +62,7 @@ public class Swordsmanship {
         this.abilities = new AbilityTracker(p);
         this.timers = new AbilityTimers(p);
         this.pStatClass = new PlayerStats(p);
+        this.actionMessage = new ActionBarMessages(p);
     }
 
     public void initiateAbility() {
@@ -72,13 +76,13 @@ public class Swordsmanship {
             if (cooldown < 1) {
                 int prepMessages = (int) pStatClass.getPlayerData().get("global").get(22); //Toggle for preparation messages
                 if (prepMessages > 0) {
-                    p.sendMessage(ChatColor.GRAY + ">>>You prepare your sword...<<<");
+                    actionMessage.sendMessage(ChatColor.GRAY + ">>>You prepare your sword...<<<");
                 }
                 int taskID = new BukkitRunnable() {
                     @Override
                     public void run() {
                         if (prepMessages > 0) {
-                            p.sendMessage(ChatColor.GRAY + ">>>...You rest your sword<<<");
+                            actionMessage.sendMessage(ChatColor.GRAY + ">>>...You rest your sword<<<");
                         }
                         try {
                             abilities.setPlayerAbility( "swordsmanship", -1);
@@ -90,7 +94,7 @@ public class Swordsmanship {
                 }.runTaskLater(plugin, 20 * 4).getTaskId();
                 abilities.setPlayerAbility( "swordsmanship", taskID);
             } else {
-                p.sendMessage(ChatColor.RED + "You must wait " + cooldown + " seconds to use Swift Strikes again.");
+                actionMessage.sendMessage(ChatColor.RED + "You must wait " + cooldown + " seconds to use Swift Strikes again.");
             }
         }
     }
@@ -98,7 +102,7 @@ public class Swordsmanship {
     public void enableAbility() {
         Integer[] pAbilities = abilities.getPlayerAbilities();
         Map<String, ArrayList<Number>> pStat = pStatClass.getPlayerData();
-        p.sendMessage(ChatColor.GREEN + ChatColor.BOLD.toString() + ">>>Swift Strikes Activated!<<<");
+        actionMessage.sendMessage(ChatColor.GREEN + ChatColor.BOLD.toString() + ">>>Swift Strikes Activated!<<<");
         int durationLevel = (int) pStat.get("swordsmanship").get(4);
         double duration0 = Math.ceil(durationLevel * 0.4) + 40;
         int cooldown = 300;
@@ -121,7 +125,7 @@ public class Swordsmanship {
         int taskID = new BukkitRunnable() {
             @Override
             public void run() {
-                p.sendMessage(ChatColor.RED + ChatColor.BOLD.toString() + ">>>Swift Strikes has ended<<<");
+                actionMessage.sendMessage(ChatColor.RED + ChatColor.BOLD.toString() + ">>>Swift Strikes has ended<<<");
                 abilities.setPlayerAbility( "swordsmanship", -1);
                 ((Attributable) p).getAttribute(Attribute.GENERIC_ATTACK_SPEED).setBaseValue(4.0);
                 for (int i = 1; i < finalCooldown+1; i++) {
@@ -136,7 +140,7 @@ public class Swordsmanship {
                                     timers2.removePlayer();
                                 }
                                 else {
-                                    p.sendMessage(ChatColor.GREEN + ">>>Swift Strikes is ready to use again<<<");
+                                    actionMessage.sendMessage(ChatColor.GREEN + ">>>Swift Strikes is ready to use again<<<");
                                 }
                             }
                         }
@@ -149,7 +153,7 @@ public class Swordsmanship {
         incaseLogout.setPlayerTask(p,"swordsmanship",taskID);
     }
 
-    public void preventLogoutTheft(int taskID_swordsmanship,ItemStack itemInHand_swords) {
+    public void preventLogoutTheft(int taskID_swordsmanship, ItemStack itemInHand_swords) {
         Integer[] pAbilities = abilities.getPlayerAbilities();
         Map<String, ArrayList<Number>> pStat = pStatClass.getPlayerData();
         int sharperLevel = (int) pStat.get("swordsmanship").get(12);
@@ -168,7 +172,7 @@ public class Swordsmanship {
                     cooldown = 200;
                 }
                 int finalCooldown = cooldown;
-                p.sendMessage(ChatColor.RED+ChatColor.BOLD.toString() + ">>>A magic force ends your ability<<<");
+                actionMessage.sendMessage(ChatColor.RED+ ChatColor.BOLD.toString() + ">>>A magic force ends your ability<<<");
                 abilities.setPlayerAbility( "swordsmanship", -1);
                 for(int i = 1; i < finalCooldown+1; i++) {
                     int timeRemaining = finalCooldown - i;

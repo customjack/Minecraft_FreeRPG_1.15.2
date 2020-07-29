@@ -1,6 +1,7 @@
 package mc.carlton.freerpg.perksAndAbilities;
 
 import mc.carlton.freerpg.FreeRPG;
+import mc.carlton.freerpg.gameTools.ActionBarMessages;
 import mc.carlton.freerpg.gameTools.PsuedoEnchanting;
 import mc.carlton.freerpg.playerAndServerInfo.*;
 import org.bukkit.*;
@@ -25,8 +26,8 @@ public class Fishing {
     private Player p;
     private String pName;
     private ItemStack itemInHand;
-    static Map<Player,Integer> fishPersonMap = new HashMap<>();
-    static Map<Player,Integer> fishPersonCounters = new HashMap<>();
+    static Map<Player, Integer> fishPersonMap = new HashMap<>();
+    static Map<Player, Integer> fishPersonCounters = new HashMap<>();
     ChangeStats increaseStats; //Changing Stats
 
     AbilityTracker abilities; //Abilities class
@@ -38,10 +39,12 @@ public class Fishing {
     PlayerStats pStatClass;
     //GET PLAYER STATS LIKE THIS:        Map<String, ArrayList<Number>> pStat = pStatClass.getPlayerData(p);
 
+    ActionBarMessages actionMessage;
+
     Random rand = new Random(); //Random class Import
 
-    Map<Material,Integer> fishFood = new HashMap<Material,Integer>();
-    Map<Material,Double> fishFoodSaturation = new HashMap<Material,Double>();
+    Map<Material, Integer> fishFood = new HashMap<Material, Integer>();
+    Map<Material, Double> fishFoodSaturation = new HashMap<Material, Double>();
     ArrayList<UUID> superBaitBlock = new ArrayList<>();
 
 
@@ -54,6 +57,7 @@ public class Fishing {
         this.abilities = new AbilityTracker(p);
         this.timers = new AbilityTimers(p);
         this.pStatClass=  new PlayerStats(p);
+        this.actionMessage = new ActionBarMessages(p);
 
         fishFood.put(Material.COOKED_SALMON,6);
         fishFoodSaturation.put(Material.COOKED_SALMON,1.6);
@@ -83,13 +87,13 @@ public class Fishing {
             if (cooldown < 1) {
                 int prepMessages = (int) pStatClass.getPlayerData().get("global").get(22); //Toggle for preparation messages
                 if (prepMessages > 0) {
-                    p.sendMessage(ChatColor.GRAY + ">>>You prepare your fishing rod...<<<");
+                    actionMessage.sendMessage(ChatColor.GRAY + ">>>You prepare your fishing rod...<<<");
                 }
                 int taskID = new BukkitRunnable() {
                     @Override
                     public void run() {
                         if (prepMessages > 0) {
-                            p.sendMessage(ChatColor.GRAY + ">>>...You rest your fishing rod<<<");
+                            actionMessage.sendMessage(ChatColor.GRAY + ">>>...You rest your fishing rod<<<");
                         }
                         try {
                             abilities.setPlayerAbility( "fishing", -1);
@@ -101,7 +105,7 @@ public class Fishing {
                 }.runTaskLater(plugin, 20 * 4).getTaskId();
                 abilities.setPlayerAbility( "fishing", taskID);
             } else {
-                p.sendMessage(ChatColor.RED + "You must wait " + cooldown + " seconds to use Super-bait again.");
+                actionMessage.sendMessage(ChatColor.RED + "You must wait " + cooldown + " seconds to use Super-bait again.");
             }
         }
     }
@@ -109,7 +113,7 @@ public class Fishing {
     public void enableAbility() {
         Integer[] pAbilities = abilities.getPlayerAbilities();
         Map<String, ArrayList<Number>> pStat = pStatClass.getPlayerData();
-        p.sendMessage(ChatColor.GREEN + ChatColor.BOLD.toString() + ">>>Super-bait Activated!<<<");
+        actionMessage.sendMessage(ChatColor.GREEN + ChatColor.BOLD.toString() + ">>>Super-bait Activated!<<<");
         int durationLevel = (int) pStat.get("fishing").get(4);
         double duration0 = Math.ceil(durationLevel * 0.2) + 20;
         int cooldown = 300;
@@ -124,7 +128,7 @@ public class Fishing {
         int taskID = new BukkitRunnable() {
             @Override
             public void run() {
-                p.sendMessage(ChatColor.RED + ChatColor.BOLD.toString() + ">>>Super-bait has ended<<<");
+                actionMessage.sendMessage(ChatColor.RED + ChatColor.BOLD.toString() + ">>>Super-bait has ended<<<");
                 abilities.setPlayerAbility( "fishing", -1);
                 for (int i = 1; i < finalCooldown+1; i++) {
                     int timeRemaining = finalCooldown - i;
@@ -138,7 +142,7 @@ public class Fishing {
                                     timers2.removePlayer();
                                 }
                                 else {
-                                    p.sendMessage(ChatColor.GREEN + ">>>Super-bait is ready to use again<<<");
+                                    actionMessage.sendMessage(ChatColor.GREEN + ">>>Super-bait is ready to use again<<<");
                                 }
                             }
                         }
@@ -152,7 +156,7 @@ public class Fishing {
     }
 
     public void killFishEXP(Entity fish) {
-        Map<EntityType,Integer> fishMap = new HashMap<>();
+        Map<EntityType, Integer> fishMap = new HashMap<>();
         fishMap.put(EntityType.COD,750);
         fishMap.put(EntityType.SALMON,1000);
         fishMap.put(EntityType.PUFFERFISH,2500);
@@ -190,7 +194,7 @@ public class Fishing {
 
      */
 
-    public void grapplingHook(FishHook fishhook,World world) {
+    public void grapplingHook(FishHook fishhook, World world) {
         Map<String, ArrayList<Number>> pStat = pStatClass.getPlayerData();
         int grapplingHookLevel = (int) pStat.get("fishing").get(11);
         int grappleToggle = (int) pStat.get("global").get(16);
@@ -210,7 +214,7 @@ public class Fishing {
         p.setVelocity(velocity);
     }
 
-    public void superBait(FishHook fishhook, Entity hookedEntity,World world) {
+    public void superBait(FishHook fishhook, Entity hookedEntity, World world) {
         if (hookedEntity instanceof Item) {
             ((Item) hookedEntity).setItemStack(new ItemStack(Material.DIRT,0));
             ItemStack drop = dropTable(false);
@@ -267,7 +271,7 @@ public class Fishing {
 
     }
 
-    public void normalCatch(FishHook fishhook, Entity hookedEntity,World world) {
+    public void normalCatch(FishHook fishhook, Entity hookedEntity, World world) {
         if (hookedEntity == null) {
             return;
         }
@@ -378,28 +382,28 @@ public class Fishing {
         Material foodType = food.getType();
         if (fishFood.containsKey(food.getType())) {
             double foodMultiplier = fishDietLevel*0.2;
-            p.setFoodLevel((int)Math.min(20,p.getFoodLevel() + Math.round(foodMultiplier * fishFood.get(foodType)) ));
-            p.setSaturation((float)Math.min(p.getFoodLevel(),p.getSaturation()+(foodMultiplier*fishFoodSaturation.get(foodType)) ));
+            p.setFoodLevel((int) Math.min(20,p.getFoodLevel() + Math.round(foodMultiplier * fishFood.get(foodType)) ));
+            p.setSaturation((float) Math.min(p.getFoodLevel(),p.getSaturation()+(foodMultiplier*fishFoodSaturation.get(foodType)) ));
         }
 
     }
 
 
-    public void rob(FishHook fishhook, Entity hookedEntity,World world) {
+    public void rob(FishHook fishhook, Entity hookedEntity, World world) {
         if (hookedEntity == null) {
             return;
         }
-        EntityType[] hookableEntities0 = {EntityType.BLAZE,EntityType.PIG_ZOMBIE,EntityType.GHAST,EntityType.ZOMBIE,EntityType.SPIDER,
-                                         EntityType.CAVE_SPIDER,EntityType.PIG,EntityType.CREEPER,EntityType.WITCH,EntityType.CHICKEN,
-                                         EntityType.SKELETON,EntityType.WITHER_SKELETON,EntityType.MAGMA_CUBE,EntityType.COW,EntityType.MUSHROOM_COW,
-                                         EntityType.ENDERMAN,EntityType.SHEEP,EntityType.IRON_GOLEM,EntityType.SNOWMAN,EntityType.SHULKER};
+        EntityType[] hookableEntities0 = {EntityType.BLAZE, EntityType.PIG_ZOMBIE, EntityType.GHAST, EntityType.ZOMBIE, EntityType.SPIDER,
+                                         EntityType.CAVE_SPIDER, EntityType.PIG, EntityType.CREEPER, EntityType.WITCH, EntityType.CHICKEN,
+                                         EntityType.SKELETON, EntityType.WITHER_SKELETON, EntityType.MAGMA_CUBE, EntityType.COW, EntityType.MUSHROOM_COW,
+                                         EntityType.ENDERMAN, EntityType.SHEEP, EntityType.IRON_GOLEM, EntityType.SNOWMAN, EntityType.SHULKER};
         List<EntityType> hookableEntities = Arrays.asList(hookableEntities0);
         Integer[] pTimers = timers.getPlayerTimers();
         if (!hookableEntities.contains(hookedEntity.getType())) {
             return;
         }
         if (pTimers[11] > 0) {
-            p.sendMessage(ChatColor.RED + "You must wait " + pTimers[11].toString() + " seconds to rob another mob");
+            actionMessage.sendMessage(ChatColor.RED + "You must wait " + pTimers[11].toString() + " seconds to rob another mob");
             return;
         }
         Map<String, ArrayList<Number>> pStat = pStatClass.getPlayerData();
@@ -890,7 +894,7 @@ public class Fishing {
         Material[] music_discs = {Material.MUSIC_DISC_11, Material.MUSIC_DISC_13, Material.MUSIC_DISC_BLOCKS, Material.MUSIC_DISC_CAT,
                 Material.MUSIC_DISC_CHIRP, Material.MUSIC_DISC_FAR, Material.MUSIC_DISC_MALL, Material.MUSIC_DISC_MELLOHI,
                 Material.MUSIC_DISC_STAL, Material.MUSIC_DISC_STRAD, Material.MUSIC_DISC_WAIT, Material.MUSIC_DISC_WARD};
-        Material[] chainmail = {Material.CHAINMAIL_BOOTS,Material.CHAINMAIL_CHESTPLATE,Material.CHAINMAIL_HELMET,Material.CHAINMAIL_LEGGINGS};
+        Material[] chainmail = {Material.CHAINMAIL_BOOTS, Material.CHAINMAIL_CHESTPLATE, Material.CHAINMAIL_HELMET, Material.CHAINMAIL_LEGGINGS};
         PsuedoEnchanting enchant = new PsuedoEnchanting();
 
         if (roll < rollBrackets[0]) { //Junk Tier (-1)
@@ -1271,8 +1275,8 @@ public class Fishing {
     }
 
     public ItemStack getTieredLoot(int tier) {
-        Map<Material,Integer> lootChanceMap = new HashMap<>();
-        Map<Material,Integer> possibleDrops = new HashMap<>();
+        Map<Material, Integer> lootChanceMap = new HashMap<>();
+        Map<Material, Integer> possibleDrops = new HashMap<>();
         ItemStack drop = new ItemStack(Material.COD,1);
         switch (tier) {
             case 2:
@@ -1462,17 +1466,17 @@ public class Fishing {
                 lootChanceMap.put(Material.DIAMOND_HELMET,0);
                 break;
         }
-        Material[] tools0 = {Material.DIAMOND_PICKAXE,Material.IRON_PICKAXE,Material.DIAMOND_SHOVEL,Material.IRON_SHOVEL,Material.DIAMOND_AXE,Material.IRON_AXE};
+        Material[] tools0 = {Material.DIAMOND_PICKAXE, Material.IRON_PICKAXE, Material.DIAMOND_SHOVEL, Material.IRON_SHOVEL, Material.DIAMOND_AXE, Material.IRON_AXE};
         List<Material> tools = Arrays.asList(tools0);
-        Material[] swords0 = {Material.DIAMOND_SWORD,Material.IRON_SWORD};
+        Material[] swords0 = {Material.DIAMOND_SWORD, Material.IRON_SWORD};
         List<Material> swords = Arrays.asList(swords0);
-        Material[] helmet0 = {Material.DIAMOND_HELMET,Material.IRON_HELMET};
+        Material[] helmet0 = {Material.DIAMOND_HELMET, Material.IRON_HELMET};
         List<Material> helmet = Arrays.asList(helmet0);
-        Material[] chestplate0 = {Material.DIAMOND_CHESTPLATE,Material.IRON_CHESTPLATE};
+        Material[] chestplate0 = {Material.DIAMOND_CHESTPLATE, Material.IRON_CHESTPLATE};
         List<Material> chestplate = Arrays.asList(chestplate0);
-        Material[] leggings0 = {Material.DIAMOND_LEGGINGS,Material.IRON_LEGGINGS};
+        Material[] leggings0 = {Material.DIAMOND_LEGGINGS, Material.IRON_LEGGINGS};
         List<Material> leggings = Arrays.asList(leggings0);
-        Material[] boots0 = {Material.DIAMOND_BOOTS,Material.IRON_BOOTS};
+        Material[] boots0 = {Material.DIAMOND_BOOTS, Material.IRON_BOOTS};
         List<Material> boots = Arrays.asList(boots0);
 
         int  T = 0;
