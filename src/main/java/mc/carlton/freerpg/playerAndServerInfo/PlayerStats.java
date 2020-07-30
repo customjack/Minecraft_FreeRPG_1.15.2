@@ -14,6 +14,7 @@ public class PlayerStats {
     static Map<UUID, Map<String, ArrayList<Number>>> player_statsMap = new HashMap<UUID, Map<String, ArrayList<Number>>>();
     static Map<UUID, Number> player_LoginTime = new HashMap<>();
     static Map<UUID, Number> player_playTime = new HashMap<>();
+    static Map<UUID, String> player_language = new HashMap<>();
 
     public PlayerStats(Player p) {
         this.player = p;
@@ -70,6 +71,13 @@ public class PlayerStats {
         }
         playTime_string = hoursString + ":" + minutesString + ":" + secondsString;
         return playTime_string;
+    }
+
+    public void setPlayerLanguage(String language) {
+        player_language.put(uuid,language);
+    }
+    public String getPlayerLanguage() {
+        return player_language.get(uuid);
     }
 
     public void removePlayer() {

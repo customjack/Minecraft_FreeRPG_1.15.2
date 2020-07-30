@@ -2,6 +2,7 @@ package mc.carlton.freerpg.perksAndAbilities;
 
 import mc.carlton.freerpg.FreeRPG;
 import mc.carlton.freerpg.gameTools.ActionBarMessages;
+import mc.carlton.freerpg.gameTools.LanguageSelector;
 import mc.carlton.freerpg.playerAndServerInfo.*;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -46,6 +47,7 @@ public class Farming {
     //GET TRACKED BLOCKS LIKE THIS:        ArrayList<Location> blocksLocations = placedClass.getBlocks();
 
     ActionBarMessages actionMessage;
+    LanguageSelector lang;
 
     Random rand = new Random(); //Random class Import
 
@@ -63,7 +65,7 @@ public class Farming {
                                 EntityType.HORSE, EntityType.DONKEY, EntityType.MULE, EntityType.SKELETON_HORSE, EntityType.TURTLE,
                                 EntityType.PANDA, EntityType.FOX, EntityType.BEE};
     List<EntityType> babyAnimals = Arrays.asList(babyAnimals0);
-    Material[] hoes0 = {Material.DIAMOND_HOE, Material.GOLDEN_HOE, Material.IRON_HOE, Material.STONE_HOE, Material.WOODEN_HOE};
+    Material[] hoes0 = { Material.DIAMOND_HOE, Material.GOLDEN_HOE, Material.IRON_HOE, Material.STONE_HOE, Material.WOODEN_HOE};
     List<Material> hoes = Arrays.asList(hoes0);
     EntityType[] breedingAnimals0 = {EntityType.MUSHROOM_COW, EntityType.COW, EntityType.SHEEP, EntityType.PIG, EntityType.CHICKEN, EntityType.RABBIT,
                                     EntityType.TURTLE, EntityType.PANDA, EntityType.FOX, EntityType.BEE};
@@ -85,6 +87,7 @@ public class Farming {
         this.pStatClass=  new PlayerStats(p);
         this.placedClass = new PlacedBlocks();
         this.actionMessage = new ActionBarMessages(p);
+        this.lang = new LanguageSelector(p);
 
         farmFood.put(Material.GOLDEN_APPLE,4);
         farmFoodSaturation.put(Material.GOLDEN_APPLE,13.6);
@@ -160,13 +163,13 @@ public class Farming {
             if (cooldown < 1) {
                 int prepMessages = (int) pStatClass.getPlayerData().get("global").get(22); //Toggle for preparation messages
                 if (prepMessages > 0) {
-                    actionMessage.sendMessage(ChatColor.GRAY + ">>>You prepare your hoe...<<<");
+                    actionMessage.sendMessage(ChatColor.GRAY + ">>>" + lang.getString("prepare") + " " + lang.getString("hoe") + "...<<<");
                 }
                 int taskID = new BukkitRunnable() {
                     @Override
                     public void run() {
                         if (prepMessages > 0) {
-                            actionMessage.sendMessage(ChatColor.GRAY + ">>>...You rest your hoe<<<");
+                            actionMessage.sendMessage(ChatColor.GRAY + ">>>..." + lang.getString("rest") + " " +lang.getString("hoe") + "<<<");
                         }
                         try {
                             abilities.setPlayerAbility( "farming", -1);
@@ -178,7 +181,7 @@ public class Farming {
                 }.runTaskLater(plugin, 20 * 4).getTaskId();
                 abilities.setPlayerAbility( "farming", taskID);
             } else {
-                actionMessage.sendMessage(ChatColor.RED + "You must wait " + cooldown + " seconds to use Natural Regeneration again.");
+                actionMessage.sendMessage(ChatColor.RED +lang.getString("naturalRegeneration") + " " + lang.getString("cooldown") + ": " + cooldown+ "s");
             }
         }
     }
@@ -186,7 +189,7 @@ public class Farming {
     public void enableAbility() {
         Integer[] pAbilities = abilities.getPlayerAbilities();
         Map<String, ArrayList<Number>> pStat = pStatClass.getPlayerData();
-        actionMessage.sendMessage(ChatColor.GREEN + ChatColor.BOLD.toString() + ">>>Natural Regeneration Activated!<<<");
+        actionMessage.sendMessage(ChatColor.GREEN + ChatColor.BOLD.toString() + ">>>" + lang.getString("naturalRegeneration") + " " + lang.getString("activated") + "<<<");
         int durationLevel = (int) pStat.get("farming").get(4);
         double duration0 = Math.ceil(durationLevel * 0.4) + 40;
         int cooldown = 300;
@@ -201,7 +204,7 @@ public class Farming {
         int taskID = new BukkitRunnable() {
             @Override
             public void run() {
-                actionMessage.sendMessage(ChatColor.RED + ChatColor.BOLD.toString() + ">>>Natural Regeneration has ended<<<");
+                actionMessage.sendMessage(ChatColor.RED + ChatColor.BOLD.toString() + ">>>" + lang.getString("naturalRegeneration") + " " + lang.getString("ended") + "<<<");
                 abilities.setPlayerAbility( "farming", -1);
                 for (int i = 1; i < finalCooldown+1; i++) {
                     int timeRemaining = finalCooldown - i;
@@ -215,7 +218,7 @@ public class Farming {
                                     timers2.removePlayer();
                                 }
                                 else {
-                                    actionMessage.sendMessage(ChatColor.GREEN + ">>>Natural Regeneration is ready to use again<<<");
+                                    actionMessage.sendMessage(ChatColor.GREEN + ">>>" + lang.getString("naturalRegeneration") + " " + lang.getString("readyToUse") + "<<<");
                                 }
                             }
                         }

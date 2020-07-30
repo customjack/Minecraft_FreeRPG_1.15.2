@@ -1,6 +1,7 @@
 package mc.carlton.freerpg.commands;
 
 import mc.carlton.freerpg.FreeRPG;
+import mc.carlton.freerpg.gameTools.LanguageSelector;
 import mc.carlton.freerpg.gameTools.PsuedoEnchanting;
 import mc.carlton.freerpg.playerAndServerInfo.*;
 import org.bukkit.Bukkit;
@@ -31,8 +32,9 @@ public class FrpgCommands implements CommandExecutor {
         if (args.length == 0) {
             if (sender instanceof Player) {
                 Player p = (Player) sender;
+                LanguageSelector lang = new LanguageSelector(p);
                 if (!p.hasPermission("freeRPG.mainGUI")) {
-                    p.sendMessage(ChatColor.RED + "You do not have permission to use this command!");
+                    p.sendMessage(ChatColor.RED + lang.getString("noPermission"));
                     return true;
                 }
                 Inventory gui = Bukkit.createInventory(p, 45, "Skills");
@@ -58,7 +60,7 @@ public class FrpgCommands implements CommandExecutor {
                 ItemStack configuration = new ItemStack(Material.REDSTONE);
 
                 ItemStack[] menu_items = {global,digging,woodcutting,mining,farming,fishing,archery,beastMastery,swords,armor,axes,repair,agility,alchemy,smelting,enchanting,tokens,configuration};
-                String[] labels = {"Global","Digging","Woodcutting","Mining","Farming","Fishing","Archery","Beast Mastery","Swordsmanship","Defense","Axe Mastery","Repair","Agility","Alchemy","Smelting","Enchanting","Information","Configuration"};
+                String[] labels = {lang.getString("global"),lang.getString("digging"),lang.getString("woodcutting"),lang.getString("mining"),lang.getString("farming"),lang.getString("fishing"),lang.getString("archery"),lang.getString("beastMastery"),lang.getString("swordsmanship"),lang.getString("defense"),lang.getString("axeMastery"),lang.getString("repair"),lang.getString("agility"),lang.getString("alchemy"),lang.getString("smelting"),lang.getString("enchanting"),lang.getString("information"),lang.getString("configuration")};
                 String[] labels0 = {"global","digging", "woodcutting", "mining", "farming", "fishing", "archery", "beastMastery", "swordsmanship", "defense", "axeMastery", "repair", "agility", "alchemy", "smelting", "enchanting"};
                 Integer[] indices = {4,11,12,13,14,15,20,21,22,23,24,29,30,31,32,33,36,44};
                 PlayerStats pStatClass = new PlayerStats(p);
@@ -76,18 +78,18 @@ public class FrpgCommands implements CommandExecutor {
                         }
                         int level = pStat.get(labels0[i]).get(0).intValue();
                         int EXP = pStat.get(labels0[i]).get(1).intValue();
-                        lore_skills.add(ChatColor.GRAY + "Level: " + ChatColor.BLUE + String.valueOf(level));
-                        lore_skills.add(ChatColor.GRAY + "Experience: " + ChatColor.BLUE + String.valueOf(EXP));
+                        lore_skills.add(ChatColor.GRAY + lang.getString("level") + ": " + ChatColor.BLUE + String.valueOf(level));
+                        lore_skills.add(ChatColor.GRAY + lang.getString("experience") + ": " + ChatColor.BLUE + String.valueOf(EXP));
                         ChangeStats getEXP = new ChangeStats(p);
                         int nextEXP = getEXP.getEXPfromLevel(level+1);
                         int EXPtoNext = nextEXP - EXP;
-                        lore_skills.add(ChatColor.GRAY + "EXP to next level: " + ChatColor.GREEN + String.valueOf(EXPtoNext));
+                        lore_skills.add(ChatColor.GRAY + "EXP to next " + lang.getString("level") + ": " + ChatColor.GREEN + String.valueOf(EXPtoNext));
 
                     }
                     else if (i==0) {
                         int globalTokens = (int) pStat.get(labels0[i]).get(1);
                         int totalLevel = pStat.get("global").get(0).intValue();
-                        lore_skills.add(ChatColor.GRAY + "Total Level: " + ChatColor.GOLD + String.valueOf(totalLevel));
+                        lore_skills.add(ChatColor.GRAY + lang.getString("total") + lang.getString("level") +": " + ChatColor.GOLD + String.valueOf(totalLevel));
                         if (globalTokens > 0) {
                             item.addUnsafeEnchantment(Enchantment.DURABILITY,1);
                         }
@@ -117,15 +119,15 @@ public class FrpgCommands implements CommandExecutor {
                         PlayerStats timeStats = new PlayerStats(p);
                         String playTimeString = timeStats.getPlayerPlayTimeString();
                         ArrayList<String> lore = new ArrayList<>();
-                        lore.add(ChatColor.GRAY + "Total Play Time: " + ChatColor.GOLD + playTimeString);
-                        lore.add(ChatColor.GRAY + "Global Tokens: " + ChatColor.GOLD + String.valueOf(gTokens));
-                        lore.add(ChatColor.GRAY + "SKill Tokens: " + ChatColor.GOLD + String.valueOf(totTokens_S));
-                        lore.add(ChatColor.GRAY + "Passive Tokens: " + ChatColor.GOLD + String.valueOf(totTokens_P));
+                        lore.add(ChatColor.GRAY + lang.getString("totalPlayTime")+ ": " + ChatColor.GOLD + playTimeString);
+                        lore.add(ChatColor.GRAY + lang.getString("globalPassiveTitle0")+ ": " + ChatColor.GOLD + String.valueOf(gTokens));
+                        lore.add(ChatColor.GRAY + lang.getString("diggingPassiveTitle2")+": " + ChatColor.GOLD + String.valueOf(totTokens_S));
+                        lore.add(ChatColor.GRAY + lang.getString("diggingPassiveTitle0")+": " + ChatColor.GOLD + String.valueOf(totTokens_P));
                         meta.setLore(lore);
                     }
                     else if (indices[i] == 44) {
                         ArrayList<String> lore = new ArrayList<>();
-                        lore.add(ChatColor.GRAY + "Click for options");
+                        lore.add(ChatColor.GRAY + lang.getString("clickForOptions"));
                         meta.setLore(lore);
                     }
                     item.setItemMeta(meta);
@@ -153,7 +155,8 @@ public class FrpgCommands implements CommandExecutor {
                     catch (NumberFormatException e) {
                         if (sender instanceof Player) {
                             Player p = (Player) sender;
-                            p.sendMessage(ChatColor.RED + "Improper Arguments, try /frpg help [(Optional) page]");
+                            LanguageSelector lang = new LanguageSelector(p);
+                            p.sendMessage(ChatColor.RED +lang.getString("improperArguments") +" /frpg help [(Optional) page]");
                         } else {
                             System.out.println("Improper Arguments, try /frpg help [(Optional) page]");
                         }
@@ -165,8 +168,9 @@ public class FrpgCommands implements CommandExecutor {
                 }
                 if (sender instanceof Player) {
                     Player p = (Player) sender;
+                    LanguageSelector lang = new LanguageSelector(p);
                     if (!p.hasPermission("freeRPG.help")) {
-                        p.sendMessage(ChatColor.RED + "You do not have permission to use this command!");
+                        p.sendMessage(ChatColor.RED + lang.getString("noPermission"));
                         return true;
                     }
                         p.sendMessage(ChatColor.RED + "------| " + ChatColor.GREEN + ChatColor.BOLD.toString() + " Help" +
@@ -222,7 +226,8 @@ public class FrpgCommands implements CommandExecutor {
             } else {
                 if (sender instanceof Player) {
                     Player p = (Player) sender;
-                    p.sendMessage(ChatColor.RED + "Improper Arguments, try /frpg help [(Optional) page]");
+                    LanguageSelector lang = new LanguageSelector(p);
+                    p.sendMessage(ChatColor.RED +lang.getString("improperArguments") +" /frpg help [(Optional) page]");
                 } else {
                     System.out.println("Improper Arguments, try /frpg help [(Optional) page]");
                 }
@@ -234,8 +239,9 @@ public class FrpgCommands implements CommandExecutor {
             if (args.length == 1) {
                 if (sender instanceof Player) {
                     Player p = (Player) sender;
+                    LanguageSelector lang = new LanguageSelector(p);
                     if (!p.hasPermission("freeRPG.info")) {
-                        p.sendMessage(ChatColor.RED + "You do not have permission to use this command!");
+                        p.sendMessage(ChatColor.RED + lang.getString("noPermission"));
                         return true;
                     }
                     p.sendMessage("Information URL (Google Docs): " + ChatColor.AQUA + ChatColor.UNDERLINE.toString() + "shorturl.at/ptCDX" +
@@ -246,7 +252,8 @@ public class FrpgCommands implements CommandExecutor {
             } else {
                 if (sender instanceof Player) {
                     Player p = (Player) sender;
-                    p.sendMessage(ChatColor.RED + "Improper Arguments, try /frpg info");
+                    LanguageSelector lang = new LanguageSelector(p);
+                    p.sendMessage(ChatColor.RED +lang.getString("improperArguments") +" /frpg info");
                 } else {
                     System.out.println("You must be a player to use this command");
                 }
@@ -264,7 +271,8 @@ public class FrpgCommands implements CommandExecutor {
                             level = Integer.valueOf(args[1]);
                         }
                         catch (NumberFormatException e) {
-                            p.sendMessage(ChatColor.RED + "Improper Arguments, try /frpg enchantItem [level]");
+                            LanguageSelector lang = new LanguageSelector(p);
+                            p.sendMessage(ChatColor.RED +lang.getString("improperArguments") +" /frpg enchantItem [level]");
                             return true;
                         }
                         if (level < 40) {
@@ -276,7 +284,8 @@ public class FrpgCommands implements CommandExecutor {
                             p.sendMessage(ChatColor.RED + "Level argument must be less than 40");
                         }
                     } else {
-                        p.sendMessage(ChatColor.RED + "Improper Arguments, try /frpg enchantItem [level]");
+                        LanguageSelector lang = new LanguageSelector(p);
+                        p.sendMessage(ChatColor.RED +lang.getString("improperArguments") +" /frpg enchantItem [level]");
                     }
                 } else {
                     p.sendMessage(ChatColor.RED + "You do not have permission to cast this command");
@@ -298,7 +307,8 @@ public class FrpgCommands implements CommandExecutor {
                     catch (NumberFormatException e) {
                         if (sender instanceof Player) {
                             Player p = (Player) sender;
-                            p.sendMessage(ChatColor.RED + "Improper Arguments, try /frpg statLeaders [skillName] [(Optional) page]");
+                            LanguageSelector lang = new LanguageSelector(p);
+                            p.sendMessage(ChatColor.RED +lang.getString("improperArguments") +" /frpg statLeaders [skillName] [(Optional) page]");
                         } else {
                             System.out.println("Improper Arguments, try /frpg statLeaders [skillName] [(Optional) page]");
                         }
@@ -341,7 +351,8 @@ public class FrpgCommands implements CommandExecutor {
                     if (sender instanceof Player) {
                         Player p = (Player) sender;
                         if (p.hasPermission("freeRPG.leaderboard")) {
-                            p.sendMessage(ChatColor.RED + "Improper Arguments, try /frpg statLeaders [skillName] [(Optional) page]");
+                            LanguageSelector lang = new LanguageSelector(p);
+                            p.sendMessage(ChatColor.RED +lang.getString("improperArguments") +" /frpg statLeaders [skillName] [(Optional) page]");
                         } else {
                             p.sendMessage(ChatColor.RED + "You do not have permissions to run this command!");
                         }
@@ -353,7 +364,8 @@ public class FrpgCommands implements CommandExecutor {
                 if (sender instanceof Player) {
                     Player p = (Player) sender;
                     if (p.hasPermission("freeRPG.leaderboard")) {
-                        p.sendMessage(ChatColor.RED + "Improper Arguments, try /frpg statLeaders [skillName] [(Optional) page]");
+                        LanguageSelector lang = new LanguageSelector(p);
+                        p.sendMessage(ChatColor.RED +lang.getString("improperArguments") +" /frpg statLeaders [skillName] [(Optional) page]");
                     } else {
                         p.sendMessage(ChatColor.RED + "You do not have permissions to run this command!");
                     }
@@ -385,7 +397,8 @@ public class FrpgCommands implements CommandExecutor {
                 catch (NumberFormatException e) {
                     if (sender instanceof Player) {
                         Player p = (Player) sender;
-                        p.sendMessage(ChatColor.RED + "Improper Arguments, try /frpg giveEXP [playerName] [skillName] [exp]");
+                        LanguageSelector lang = new LanguageSelector(p);
+                        p.sendMessage(ChatColor.RED +lang.getString("improperArguments") +" /frpg giveEXP [playerName] [skillName] [exp]");
                     } else {
                         System.out.println("Improper Arguments, try /frpg giveEXP [playerName] [skillName] [exp]");
                     }
@@ -424,7 +437,8 @@ public class FrpgCommands implements CommandExecutor {
                     if (sender instanceof Player) {
                         Player p = (Player) sender;
                         if (p.hasPermission("freeRPG.giveEXP")) {
-                            p.sendMessage(ChatColor.RED + "Improper Arguments, try /frpg giveEXP [playerName] [skillName] [exp]");
+                            LanguageSelector lang = new LanguageSelector(p);
+                            p.sendMessage(ChatColor.RED +lang.getString("improperArguments") +" /frpg giveEXP [playerName] [skillName] [exp]");
                         } else {
                             p.sendMessage(ChatColor.RED + "You do not have permissions to run this command!");
                         }
@@ -438,7 +452,8 @@ public class FrpgCommands implements CommandExecutor {
                 if (sender instanceof Player) {
                     Player p = (Player) sender;
                     if (p.hasPermission("freeRPG.giveEXP")) {
-                        p.sendMessage(ChatColor.RED + "Improper Arguments, try /frpg giveEXP [playerName] [skillName] [exp]");
+                        LanguageSelector lang = new LanguageSelector(p);
+                        p.sendMessage(ChatColor.RED +lang.getString("improperArguments") +" /frpg giveEXP [playerName] [skillName] [exp]");
                     } else {
                         p.sendMessage(ChatColor.RED + "You do not have permissions to run this command!");
                     }
@@ -471,7 +486,8 @@ public class FrpgCommands implements CommandExecutor {
                 catch (NumberFormatException e) {
                     if (sender instanceof Player) {
                         Player p = (Player) sender;
-                        p.sendMessage(ChatColor.RED + "Improper Arguments, try /frpg setLevel [playerName] [skillName] [level]");
+                        LanguageSelector lang = new LanguageSelector(p);
+                        p.sendMessage(ChatColor.RED +lang.getString("improperArguments") +" /frpg setLevel [playerName] [skillName] [level]");
                     } else {
                         System.out.println("Improper Arguments, try /frpg setLevel [playerName] [skillName] [level]");
                     }
@@ -517,7 +533,8 @@ public class FrpgCommands implements CommandExecutor {
                     if (sender instanceof Player) {
                         Player p = (Player) sender;
                         if (p.hasPermission("freeRPG.setLevel")) {
-                            p.sendMessage(ChatColor.RED + "Improper Arguments, try /frpg setLevel [playerName] [skillName] [level]");
+                            LanguageSelector lang = new LanguageSelector(p);
+                            p.sendMessage(ChatColor.RED +lang.getString("improperArguments") +" /frpg setLevel [playerName] [skillName] [level]");
                         } else {
                             p.sendMessage(ChatColor.RED + "You do not have permissions to run this command!");
                         }
@@ -531,7 +548,8 @@ public class FrpgCommands implements CommandExecutor {
                 if (sender instanceof Player) {
                     Player p = (Player) sender;
                     if (p.hasPermission("freeRPG.setLevel")) {
-                        p.sendMessage(ChatColor.RED + "Improper Arguments, try /frpg setLevel [playerName] [skillName] [level]");
+                        LanguageSelector lang = new LanguageSelector(p);
+                        p.sendMessage(ChatColor.RED +lang.getString("improperArguments") +" /frpg setLevel [playerName] [skillName] [level]");
                     } else {
                         p.sendMessage(ChatColor.RED + "You do not have permissions to run this command!");
                     }
@@ -597,7 +615,8 @@ public class FrpgCommands implements CommandExecutor {
                     if (sender instanceof Player) {
                         Player p = (Player) sender;
                         if (p.hasPermission("freeRPG.statReset")) {
-                            p.sendMessage(ChatColor.RED + "Improper Arguments, try /frpg statReset [playername] [statName]");
+                            LanguageSelector lang = new LanguageSelector(p);
+                            p.sendMessage(ChatColor.RED +lang.getString("improperArguments") +" /frpg statReset [playername] [statName]");
                         } else {
                             p.sendMessage(ChatColor.RED + "You do not have permissions to run this command!");
                         }
@@ -611,7 +630,8 @@ public class FrpgCommands implements CommandExecutor {
                 if (sender instanceof Player) {
                     Player p = (Player) sender;
                     if (p.hasPermission("freeRPG.setLevel")) {
-                        p.sendMessage(ChatColor.RED + "Improper Arguments, try /frpg statReset [playername] [statName]");
+                        LanguageSelector lang = new LanguageSelector(p);
+                        p.sendMessage(ChatColor.RED +lang.getString("improperArguments") +" /frpg statReset [playername] [statName]");
                     } else {
                         p.sendMessage(ChatColor.RED + "You do not have permissions to run this command!");
                     }
@@ -646,7 +666,8 @@ public class FrpgCommands implements CommandExecutor {
                     catch (NumberFormatException e) {
                         if (sender instanceof Player) {
                             Player p = (Player) sender;
-                            p.sendMessage(ChatColor.RED + "Improper Arguments, try /frpg setLevel [playerName] [skillName] [level]");
+                            LanguageSelector lang = new LanguageSelector(p);
+                            p.sendMessage(ChatColor.RED +lang.getString("improperArguments") +" /frpg setLevel [playerName] [skillName] [level]");
                         } else {
                             System.out.println("Improper Arguments, try /frpg setLevel [playerName] [skillName] [level]");
                         }
@@ -671,7 +692,8 @@ public class FrpgCommands implements CommandExecutor {
                 if (sender instanceof Player) {
                     Player p = (Player) sender;
                     if (p.hasPermission("freeRPG.setSouls")) {
-                        p.sendMessage(ChatColor.RED + "Improper Arguments, try /frpg setSouls [playername] [amount]");
+                        LanguageSelector lang = new LanguageSelector(p);
+                        p.sendMessage(ChatColor.RED +lang.getString("improperArguments") +" /frpg setSouls [playername] [amount]");
                     } else {
                         p.sendMessage(ChatColor.RED + "You do not have permissions to run this command!");
                     }
@@ -711,7 +733,8 @@ public class FrpgCommands implements CommandExecutor {
                         catch (NumberFormatException e) {
                             if (sender instanceof Player) {
                                 Player p = (Player) sender;
-                                p.sendMessage(ChatColor.RED + "Improper Arguments, try /frpg setTokens [playername] global [amount]");
+                                LanguageSelector lang = new LanguageSelector(p);
+                                p.sendMessage(ChatColor.RED +lang.getString("improperArguments") +" /frpg setTokens [playername] global [amount]");
                             } else {
                                 System.out.println("Improper Arguments, try /frpg setTokens [playername] global [amount]");
                             }
@@ -731,7 +754,8 @@ public class FrpgCommands implements CommandExecutor {
                     else {
                         if (sender instanceof Player) {
                             Player p = (Player) sender;
-                            p.sendMessage(ChatColor.RED + "Improper Arguments, try /frpg setTokens [playername] global [amount]");
+                            LanguageSelector lang = new LanguageSelector(p);
+                            p.sendMessage(ChatColor.RED +lang.getString("improperArguments") +" /frpg setTokens [playername] global [amount]");
                         } else {
                             System.out.println("Player not online");
                         }
@@ -751,7 +775,8 @@ public class FrpgCommands implements CommandExecutor {
                         } catch (NumberFormatException e) {
                             if (sender instanceof Player) {
                                 Player p = (Player) sender;
-                                p.sendMessage(ChatColor.RED + "Improper Arguments, try /frpg setTokens [playername] [skillName] [global/skill/passive] [amount]");
+                                LanguageSelector lang = new LanguageSelector(p);
+                                p.sendMessage(ChatColor.RED +lang.getString("improperArguments") +" /frpg setTokens [playername] [skillName] [global/skill/passive] [amount]");
                             } else {
                                 System.out.println("Improper Arguments, try /frpg setTokens [playername] [skillName] [global/skill/passive] [amount]");
                             }
@@ -778,7 +803,8 @@ public class FrpgCommands implements CommandExecutor {
                     } else {
                         if (sender instanceof Player) {
                             Player p = (Player) sender;
-                            p.sendMessage(ChatColor.RED + "Improper Arguments, try /frpg setTokens [playername] [skillName] [global/skill/passive] [amount]");
+                            LanguageSelector lang = new LanguageSelector(p);
+                            p.sendMessage(ChatColor.RED +lang.getString("improperArguments") +" /frpg setTokens [playername] [skillName] [global/skill/passive] [amount]");
                         } else {
                             System.out.println("Player not online");
                         }
@@ -789,7 +815,8 @@ public class FrpgCommands implements CommandExecutor {
                 if (sender instanceof Player) {
                     Player p = (Player) sender;
                     if (p.hasPermission("freeRPG.setTokens")) {
-                        p.sendMessage(ChatColor.RED + "Improper Arguments, try /frpg setTokens [playername] [skillName] [global/skill/passive] [amount]");
+                        LanguageSelector lang = new LanguageSelector(p);
+                        p.sendMessage(ChatColor.RED +lang.getString("improperArguments") +" /frpg setTokens [playername] [skillName] [global/skill/passive] [amount]");
                     } else {
                         p.sendMessage(ChatColor.RED + "You do not have permissions to run this command!");
                     }
@@ -1263,8 +1290,9 @@ public class FrpgCommands implements CommandExecutor {
         else if (args[0].equalsIgnoreCase("configGUI") || args[0].equalsIgnoreCase("configurationGUI")) {
             if (sender instanceof Player) {
                 Player p = (Player) sender;
+                LanguageSelector lang = new LanguageSelector(p);
                 if (!p.hasPermission("freeRPG.configGUI")) {
-                    p.sendMessage(ChatColor.RED + "You do not have permission to use this command!");
+                    p.sendMessage(ChatColor.RED + lang.getString("noPermission"));
                     return true;
                 }
                 if (args.length != 1) {
@@ -1323,6 +1351,54 @@ public class FrpgCommands implements CommandExecutor {
                     abilityNotificationsToggle.setItemMeta(abilityNotificationsToggleMeta);
                     gui.setItem(23,abilityNotificationsToggle);
 
+                    //LANGUAGES
+                    LanguageSelector langManager = new LanguageSelector(p);
+                    String language = langManager.getLanguage();
+
+                    //English
+                    ItemStack english = new ItemStack(Material.BOOK);
+                    ItemMeta englishMeta = english.getItemMeta();
+                    ArrayList<String> englishLore = new ArrayList<>();
+                    englishMeta.setDisplayName(ChatColor.WHITE + ChatColor.BOLD.toString() + "English");
+                    englishLore.add(ChatColor.ITALIC+ ChatColor.GRAY.toString()+"(American English)");
+                    englishMeta.setLore(englishLore);
+                    english.setItemMeta(englishMeta);
+                    gui.setItem(29,english);
+
+                    ItemStack englishToggle = new ItemStack(Material.LIME_DYE);
+                    ItemMeta englishToggleMeta = englishToggle.getItemMeta();
+                    if (language.equalsIgnoreCase("enUs")) {
+                        englishToggleMeta.setDisplayName(ChatColor.BOLD + ChatColor.GREEN.toString() + "ON");
+                    }
+                    else {
+                        englishToggle.setType(Material.GRAY_DYE);
+                        englishToggleMeta.setDisplayName(ChatColor.BOLD + ChatColor.RED.toString() + "OFF");
+                    }
+                    englishToggle.setItemMeta(englishToggleMeta);
+                    gui.setItem(38,englishToggle);
+
+
+                    //HUNGARIAN
+                    ItemStack hungary = new ItemStack(Material.BOOK);
+                    ItemMeta hungaryMeta = hungary.getItemMeta();
+                    hungaryMeta.setDisplayName(ChatColor.WHITE + ChatColor.BOLD.toString() + "Magyar Nyelv");
+                    ArrayList<String> hungaryLore = new ArrayList<>();
+                    hungaryLore.add(ChatColor.ITALIC+ ChatColor.GRAY.toString()+"(Hungarian)");
+                    hungaryMeta.setLore(hungaryLore);
+                    hungary.setItemMeta(hungaryMeta);
+                    gui.setItem(30,hungary);
+
+                    ItemStack hungaryToggle = new ItemStack(Material.LIME_DYE);
+                    ItemMeta hungaryToggleMeta = hungaryToggle.getItemMeta();
+                    if (language.equalsIgnoreCase("hu")) {
+                        hungaryToggleMeta.setDisplayName(ChatColor.BOLD + ChatColor.GREEN.toString() + "ON");
+                    }
+                    else {
+                        hungaryToggle.setType(Material.GRAY_DYE);
+                        hungaryToggleMeta.setDisplayName(ChatColor.BOLD + ChatColor.RED.toString() + "OFF");
+                    }
+                    hungaryToggle.setItemMeta(hungaryToggleMeta);
+                    gui.setItem(39,hungaryToggle);
 
 
                     //Put the items in the inventory
@@ -1338,8 +1414,9 @@ public class FrpgCommands implements CommandExecutor {
         else if (args[0].equalsIgnoreCase("confirmGUI") || args[0].equalsIgnoreCase("confirmationGUI")) {
             if (sender instanceof Player) {
                 Player p = (Player) sender;
+                LanguageSelector lang = new LanguageSelector(p);
                 if (!p.hasPermission("freeRPG.confirmGUI")) {
-                    p.sendMessage(ChatColor.RED + "You do not have permission to use this command!");
+                    p.sendMessage(ChatColor.RED + lang.getString("noPermission"));
                     return true;
                 }
                 String[] labels_0 = {"digging","woodcutting","mining","farming","fishing","archery","beastMastery","swordsmanship","defense","axeMastery","repair","agility","alchemy","smelting","enchanting","global"};
@@ -1457,8 +1534,9 @@ public class FrpgCommands implements CommandExecutor {
         else if (args[0].equalsIgnoreCase("craftingGUI") || args[0].equalsIgnoreCase("recipeGUI")) {
             if (sender instanceof Player) {
                 Player p = (Player) sender;
+                LanguageSelector lang = new LanguageSelector(p);
                 if (!p.hasPermission("freeRPG.craftGUI")) {
-                    p.sendMessage(ChatColor.RED + "You do not have permission to use this command!");
+                    p.sendMessage(ChatColor.RED + lang.getString("noPermission"));
                     return true;
                 }
                 String[] labels_0 = {"archery1", "farming1", "farming2", "farming3", "farming4", "farming5",
@@ -1724,8 +1802,9 @@ public class FrpgCommands implements CommandExecutor {
         else if (args[0].equalsIgnoreCase("skillTree") || args[0].equalsIgnoreCase("skillTreeGUI")) {
             if (sender instanceof Player) {
                 Player p = (Player) sender;
+                LanguageSelector lang = new LanguageSelector(p);
                 if (!p.hasPermission("freeRPG.skillsGUI")) {
-                    p.sendMessage(ChatColor.RED + "You do not have permission to use this command!");
+                    p.sendMessage(ChatColor.RED + lang.getString("noPermission"));
                     return true;
                 }
             }
@@ -1819,7 +1898,7 @@ public class FrpgCommands implements CommandExecutor {
 
             //swordsmanship
             s_Name = "swordsmanship";
-            perks = new String[]{"Adrenaline","Killing Spree","Adrenaline+","Killing Frenzy","Thirst for Blood","Sharper!","Sword Mastery"};
+            perks = new String[]{"Adrenaline","Killing Dpree","Adrenaline+","Killing Frenzy","Thirst for Blood","Sharper!","Sword Mastery"};
             descriptions = new String[]{"Killing hostile mobs with a sword provides +2 s of speed per level","Killing hostile mobs with a sword provides +2 s of strength per level","+20% of speed I buff from Adrenaline is now speed II","+20% of strength I buff from Killing Spree is now strength II","Killing certain aggressive mobs with a sword restores hunger","Swift strikes now adds a level of sharpness to your sword","Swords permanently do +1 heart of damage"};
             passivePerks = new String[]{"Passive Tokens","Back","Skill Tokens","Swift Strikes Duration","Double Hit"};
             passiveDescriptions = new String[]{"Tokens to invest in passive skills (dyes)","Takes you back to the main skills menu","Tokens to invest in skill tree","Increases duration of Swift Strikes by 0.02s","Increases chance to hit mob twice (second hit does 50% damage) by 0.02%"};
@@ -1923,6 +2002,48 @@ public class FrpgCommands implements CommandExecutor {
             ConfigLoad loadConfig = new ConfigLoad();
             ArrayList<Integer> soulsInfo = loadConfig.getSoulsInfo();
             String refundCost = Integer.toString(soulsInfo.get(1));
+
+            if (sender instanceof Player) {
+                if (args.length == 2) {
+                    if (labels_arr.contains(args[1])) {
+                        Player p = (Player) sender;
+                        LanguageSelector langManager = new LanguageSelector(p);
+                        String skName = labels_0[labels_arr.indexOf(args[1])];
+                        String[] newTitles = perksMap.get(skName);
+                        String[] newDescs = descriptionsMap.get(skName);
+                        String[] newPassiveTitles = passivePerksMap.get(skName);
+                        String[] newPassiveDescs = passiveDescriptionsMap.get(skName);
+                        int i = 0;
+                        for (String title : perksMap.get(skName)) {
+                            String id = skName + "PerkTitle" + i;
+                            newTitles[i] = langManager.getString(id);
+                            i += 1;
+                        }
+                        i = 0;
+                        for (String desc : descriptionsMap.get(skName)) {
+                            String id = skName + "PerkDesc" + i;
+                            newDescs[i] = langManager.getString(id);
+                            i += 1;
+                        }
+                        i = 0;
+                        for (String passiveTitle : passivePerksMap.get(skName)) {
+                            String id = skName + "PassiveTitle" + i;
+                            newPassiveTitles[i] = langManager.getString(id);
+                            i += 1;
+                        }
+                        i = 0;
+                        for (String passiveDesc : passiveDescriptionsMap.get(skName)) {
+                            String id = skName + "PassiveDesc" + i;
+                            newPassiveDescs[i] = langManager.getString(id);
+                            i += 1;
+                        }
+                        perksMap.put(skName, newTitles);
+                        descriptionsMap.put(skName, newDescs);
+                        passivePerksMap.put(skName, newPassiveTitles);
+                        passiveDescriptionsMap.put(skName, newPassiveDescs);
+                    }
+                }
+            }
 
             if (sender instanceof Player && args.length!= 2){
                 Player p = (Player) sender;
@@ -3389,6 +3510,17 @@ public class FrpgCommands implements CommandExecutor {
 
             else {
                 System.out.println("You need to be a player to cast this command");
+            }
+        }
+
+        else {
+            if (sender instanceof Player) {
+                Player p = (Player) sender;
+                LanguageSelector lang = new LanguageSelector(p);
+                p.sendMessage(ChatColor.RED + lang.getString("unknownCommand"));
+            }
+            else {
+                System.out.println("Unknown command");
             }
         }
 

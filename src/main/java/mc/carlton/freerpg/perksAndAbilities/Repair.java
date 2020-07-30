@@ -1,6 +1,8 @@
 package mc.carlton.freerpg.perksAndAbilities;
 
 import mc.carlton.freerpg.FreeRPG;
+import mc.carlton.freerpg.gameTools.ActionBarMessages;
+import mc.carlton.freerpg.gameTools.LanguageSelector;
 import mc.carlton.freerpg.playerAndServerInfo.ChangeStats;
 import mc.carlton.freerpg.playerAndServerInfo.PlayerStats;
 import org.bukkit.ChatColor;
@@ -15,7 +17,10 @@ import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
 
 public class Repair {
     Plugin plugin = FreeRPG.getPlugin(FreeRPG.class);
@@ -28,11 +33,14 @@ public class Repair {
     PlayerStats pStatClass;
     //GET PLAYER STATS LIKE THIS:        Map<String, ArrayList<Number>> pStat = pStatClass.getPlayerData(p);
 
+    ActionBarMessages actionMessage;
+    LanguageSelector lang;
+
     Random rand = new Random(); //Random class Import
 
-    Map<Material,Material> repairItems = new HashMap<>();
+    Map<Material, Material> repairItems = new HashMap<>();
 
-    Map<Material,Integer> repairItemsAmount = new HashMap<>();
+    Map<Material, Integer> repairItemsAmount = new HashMap<>();
 
     public Repair(Player p) {
         this.p = p;
@@ -40,61 +48,63 @@ public class Repair {
         this.itemInHand = p.getInventory().getItemInMainHand();
         this.increaseStats = new ChangeStats(p);
         this.pStatClass = new PlayerStats(p);
+        this.actionMessage = new ActionBarMessages(p);
+        this.lang = new LanguageSelector(p);
 
-        repairItems.put(Material.WOODEN_AXE,Material.STICK);
-        repairItems.put(Material.WOODEN_HOE,Material.STICK);
-        repairItems.put(Material.WOODEN_PICKAXE,Material.STICK);
-        repairItems.put(Material.WOODEN_SWORD,Material.STICK);
-        repairItems.put(Material.WOODEN_SHOVEL,Material.STICK);
-        repairItems.put(Material.LEATHER_HELMET,Material.LEATHER);
-        repairItems.put(Material.LEATHER_CHESTPLATE,Material.LEATHER);
-        repairItems.put(Material.LEATHER_LEGGINGS,Material.LEATHER);
-        repairItems.put(Material.LEATHER_BOOTS,Material.LEATHER);
-        repairItems.put(Material.IRON_AXE,Material.IRON_INGOT);
-        repairItems.put(Material.IRON_HOE,Material.IRON_INGOT);
-        repairItems.put(Material.IRON_PICKAXE,Material.IRON_INGOT);
-        repairItems.put(Material.IRON_SWORD,Material.IRON_INGOT);
-        repairItems.put(Material.IRON_SHOVEL,Material.IRON_INGOT);
-        repairItems.put(Material.IRON_HELMET,Material.IRON_INGOT);
-        repairItems.put(Material.IRON_CHESTPLATE,Material.IRON_INGOT);
-        repairItems.put(Material.IRON_LEGGINGS,Material.IRON_INGOT);
-        repairItems.put(Material.IRON_BOOTS,Material.IRON_INGOT);
-        repairItems.put(Material.GOLDEN_AXE,Material.GOLD_INGOT);
-        repairItems.put(Material.GOLDEN_HOE,Material.GOLD_INGOT);
-        repairItems.put(Material.GOLDEN_PICKAXE,Material.GOLD_INGOT);
-        repairItems.put(Material.GOLDEN_SWORD,Material.GOLD_INGOT);
-        repairItems.put(Material.GOLDEN_SHOVEL,Material.GOLD_INGOT);
-        repairItems.put(Material.GOLDEN_HELMET,Material.GOLD_INGOT);
-        repairItems.put(Material.GOLDEN_CHESTPLATE,Material.GOLD_INGOT);
-        repairItems.put(Material.GOLDEN_LEGGINGS,Material.GOLD_INGOT);
-        repairItems.put(Material.GOLDEN_BOOTS,Material.GOLD_INGOT);
-        repairItems.put(Material.STONE_AXE,Material.COBBLESTONE);
-        repairItems.put(Material.STONE_HOE,Material.COBBLESTONE);
-        repairItems.put(Material.STONE_PICKAXE,Material.COBBLESTONE);
-        repairItems.put(Material.STONE_SWORD,Material.COBBLESTONE);
-        repairItems.put(Material.STONE_SHOVEL,Material.COBBLESTONE);
-        repairItems.put(Material.CHAINMAIL_HELMET,Material.IRON_INGOT);
-        repairItems.put(Material.CHAINMAIL_CHESTPLATE,Material.IRON_INGOT);
-        repairItems.put(Material.CHAINMAIL_LEGGINGS,Material.IRON_INGOT);
-        repairItems.put(Material.CHAINMAIL_BOOTS,Material.IRON_INGOT);
-        repairItems.put(Material.DIAMOND_AXE,Material.DIAMOND);
-        repairItems.put(Material.DIAMOND_HOE,Material.DIAMOND);
-        repairItems.put(Material.DIAMOND_PICKAXE,Material.DIAMOND);
-        repairItems.put(Material.DIAMOND_SWORD,Material.DIAMOND);
-        repairItems.put(Material.DIAMOND_SHOVEL,Material.DIAMOND);
-        repairItems.put(Material.DIAMOND_HELMET,Material.DIAMOND);
-        repairItems.put(Material.DIAMOND_CHESTPLATE,Material.DIAMOND);
-        repairItems.put(Material.DIAMOND_LEGGINGS,Material.DIAMOND);
-        repairItems.put(Material.DIAMOND_BOOTS,Material.DIAMOND);
-        repairItems.put(Material.SHEARS,Material.IRON_INGOT);
-        repairItems.put(Material.FISHING_ROD,Material.STRING);
-        repairItems.put(Material.CARROT_ON_A_STICK,Material.CARROT);
-        repairItems.put(Material.FLINT_AND_STEEL,Material.FLINT);
-        repairItems.put(Material.BOW,Material.STRING);
-        repairItems.put(Material.TRIDENT,Material.PRISMARINE_BRICKS);
-        repairItems.put(Material.ELYTRA,Material.PHANTOM_MEMBRANE);
-        repairItems.put(Material.SHIELD,Material.IRON_INGOT);
-        repairItems.put(Material.CROSSBOW,Material.STRING);
+        repairItems.put(Material.WOODEN_AXE, Material.STICK);
+        repairItems.put(Material.WOODEN_HOE, Material.STICK);
+        repairItems.put(Material.WOODEN_PICKAXE, Material.STICK);
+        repairItems.put(Material.WOODEN_SWORD, Material.STICK);
+        repairItems.put(Material.WOODEN_SHOVEL, Material.STICK);
+        repairItems.put(Material.LEATHER_HELMET, Material.LEATHER);
+        repairItems.put(Material.LEATHER_CHESTPLATE, Material.LEATHER);
+        repairItems.put(Material.LEATHER_LEGGINGS, Material.LEATHER);
+        repairItems.put(Material.LEATHER_BOOTS, Material.LEATHER);
+        repairItems.put(Material.IRON_AXE, Material.IRON_INGOT);
+        repairItems.put(Material.IRON_HOE, Material.IRON_INGOT);
+        repairItems.put(Material.IRON_PICKAXE, Material.IRON_INGOT);
+        repairItems.put(Material.IRON_SWORD, Material.IRON_INGOT);
+        repairItems.put(Material.IRON_SHOVEL, Material.IRON_INGOT);
+        repairItems.put(Material.IRON_HELMET, Material.IRON_INGOT);
+        repairItems.put(Material.IRON_CHESTPLATE, Material.IRON_INGOT);
+        repairItems.put(Material.IRON_LEGGINGS, Material.IRON_INGOT);
+        repairItems.put(Material.IRON_BOOTS, Material.IRON_INGOT);
+        repairItems.put(Material.GOLDEN_AXE, Material.GOLD_INGOT);
+        repairItems.put(Material.GOLDEN_HOE, Material.GOLD_INGOT);
+        repairItems.put(Material.GOLDEN_PICKAXE, Material.GOLD_INGOT);
+        repairItems.put(Material.GOLDEN_SWORD, Material.GOLD_INGOT);
+        repairItems.put(Material.GOLDEN_SHOVEL, Material.GOLD_INGOT);
+        repairItems.put(Material.GOLDEN_HELMET, Material.GOLD_INGOT);
+        repairItems.put(Material.GOLDEN_CHESTPLATE, Material.GOLD_INGOT);
+        repairItems.put(Material.GOLDEN_LEGGINGS, Material.GOLD_INGOT);
+        repairItems.put(Material.GOLDEN_BOOTS, Material.GOLD_INGOT);
+        repairItems.put(Material.STONE_AXE, Material.COBBLESTONE);
+        repairItems.put(Material.STONE_HOE, Material.COBBLESTONE);
+        repairItems.put(Material.STONE_PICKAXE, Material.COBBLESTONE);
+        repairItems.put(Material.STONE_SWORD, Material.COBBLESTONE);
+        repairItems.put(Material.STONE_SHOVEL, Material.COBBLESTONE);
+        repairItems.put(Material.CHAINMAIL_HELMET, Material.IRON_INGOT);
+        repairItems.put(Material.CHAINMAIL_CHESTPLATE, Material.IRON_INGOT);
+        repairItems.put(Material.CHAINMAIL_LEGGINGS, Material.IRON_INGOT);
+        repairItems.put(Material.CHAINMAIL_BOOTS, Material.IRON_INGOT);
+        repairItems.put(Material.DIAMOND_AXE, Material.DIAMOND);
+        repairItems.put(Material.DIAMOND_HOE, Material.DIAMOND);
+        repairItems.put(Material.DIAMOND_PICKAXE, Material.DIAMOND);
+        repairItems.put(Material.DIAMOND_SWORD, Material.DIAMOND);
+        repairItems.put(Material.DIAMOND_SHOVEL, Material.DIAMOND);
+        repairItems.put(Material.DIAMOND_HELMET, Material.DIAMOND);
+        repairItems.put(Material.DIAMOND_CHESTPLATE, Material.DIAMOND);
+        repairItems.put(Material.DIAMOND_LEGGINGS, Material.DIAMOND);
+        repairItems.put(Material.DIAMOND_BOOTS, Material.DIAMOND);
+        repairItems.put(Material.SHEARS, Material.IRON_INGOT);
+        repairItems.put(Material.FISHING_ROD, Material.STRING);
+        repairItems.put(Material.CARROT_ON_A_STICK, Material.CARROT);
+        repairItems.put(Material.FLINT_AND_STEEL, Material.FLINT);
+        repairItems.put(Material.BOW, Material.STRING);
+        repairItems.put(Material.TRIDENT, Material.PRISMARINE_BRICKS);
+        repairItems.put(Material.ELYTRA, Material.PHANTOM_MEMBRANE);
+        repairItems.put(Material.SHIELD, Material.IRON_INGOT);
+        repairItems.put(Material.CROSSBOW, Material.STRING);
 
         repairItemsAmount.put(Material.WOODEN_AXE,3);
         repairItemsAmount.put(Material.WOODEN_HOE,2);
@@ -204,8 +214,8 @@ public class Repair {
                         expRepairMultiplier = 9;
                         break;
                     case LEATHER_HELMET:
-                        repairPercentage  = (0.9 + repairBonus)/9.0;
-                        a = 9.0;
+                        repairPercentage  = (0.9 + repairBonus)/5.0;
+                        a = 5.0;
                         expToGive += 90;
                         expRepairMultiplier = 9;
                         break;
@@ -501,7 +511,7 @@ public class Repair {
                 }
                 ItemMeta itemInHandMeta = itemInHand.getItemMeta();
                 if (repairPercentage*a < 0.2) {
-                    p.sendMessage(ChatColor.RED + "You are not skilled enough to adequately repair this item yet");
+                    actionMessage.sendMessage(ChatColor.RED + lang.getString("repairFail0"));
                     repaired = false;
                 }
                 else {
@@ -517,7 +527,7 @@ public class Repair {
                         }
                         int maxDamage = itemInHand.getType().getMaxDurability();
                         int repairedDamage = (int) Math.round(maxDamage*repairPercentage);
-                        int expDamage = (int) a*Math.min(repairedDamage,currentDamage);
+                        int expDamage = (int) a* Math.min(repairedDamage,currentDamage);
                         ((Damageable) itemInHandMeta).setDamage(Math.max(0,currentDamage-repairedDamage));
                         itemInHand.setItemMeta(itemInHandMeta);
                         int enchantEXP = magicRepair();
@@ -555,7 +565,7 @@ public class Repair {
                     p.getInventory().addItem(new ItemStack(type,1));
                 }
                 else {
-                    p.sendMessage(ChatColor.RED + "You failed to salvage any materials");
+                    actionMessage.sendMessage(ChatColor.RED + lang.getString("repairFail1"));
                 }
             }
             else {
@@ -565,7 +575,7 @@ public class Repair {
                 if (itemInHandMeta.hasEnchants()) {
                     ItemStack enchantedBook = new ItemStack(Material.ENCHANTED_BOOK,1);
                     EnchantmentStorageMeta meta = ((EnchantmentStorageMeta) enchantedBook.getItemMeta());
-                    Map<Enchantment,Integer> enchants = itemInHandMeta.getEnchants();
+                    Map<Enchantment, Integer> enchants = itemInHandMeta.getEnchants();
                     for (Enchantment enchant : enchants.keySet()) {
                         meta.addStoredEnchant(enchant,enchants.get(enchant),true);
                     }
@@ -622,8 +632,8 @@ public class Repair {
             sucessChance = 1;
         }
         if (sucessChance < rand.nextDouble()) {
-            p.sendMessage(ChatColor.RED + "You failed to retain the item's enchantment power");
-            Map<Enchantment,Integer> enchantments = itemInHand.getEnchantments();
+            actionMessage.sendMessage(ChatColor.RED + lang.getString("repairFail2"));
+            Map<Enchantment, Integer> enchantments = itemInHand.getEnchantments();
             for (Enchantment enchantment : enchantments.keySet()) {
                 int level = enchantments.get(enchantment);
                 itemInHand.removeEnchantment(enchantment);

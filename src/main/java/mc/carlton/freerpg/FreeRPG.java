@@ -6,23 +6,26 @@ import mc.carlton.freerpg.clickEvents.PlayerLeftClick;
 import mc.carlton.freerpg.clickEvents.PlayerRightClick;
 import mc.carlton.freerpg.clickEvents.PlayerRightClickEntity;
 import mc.carlton.freerpg.combatEvents.*;
-import mc.carlton.freerpg.commands.*;
+import mc.carlton.freerpg.commands.FrpgCommands;
+import mc.carlton.freerpg.commands.SpiteQuote;
 import mc.carlton.freerpg.enchantingEvents.*;
 import mc.carlton.freerpg.furnaceEvents.FurnaceBurn;
 import mc.carlton.freerpg.furnaceEvents.FurnaceInventoryClick;
 import mc.carlton.freerpg.furnaceEvents.FurnaceSmelt;
-import mc.carlton.freerpg.guiCommands.*;
+import mc.carlton.freerpg.gameTools.ArrowTypes;
 import mc.carlton.freerpg.guiEvents.*;
 import mc.carlton.freerpg.leaveAndJoin.LoginProcedure;
 import mc.carlton.freerpg.leaveAndJoin.LogoutProcedure;
-import mc.carlton.freerpg.miscEvents.*;
-import mc.carlton.freerpg.gameTools.ArrowTypes;
 import mc.carlton.freerpg.leaveAndJoin.PlayerJoin;
 import mc.carlton.freerpg.leaveAndJoin.PlayerLeave;
+import mc.carlton.freerpg.miscEvents.*;
 import mc.carlton.freerpg.pistonEvents.PistonExtend;
 import mc.carlton.freerpg.pistonEvents.PistonRetract;
 import mc.carlton.freerpg.playerAndServerInfo.*;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -63,6 +66,17 @@ public final class FreeRPG extends JavaPlugin implements Listener {
             e.printStackTrace();
         }
 
+        //Saves Custom Languages YAML file
+        saveResource("languages.yml",true);
+
+        //config Load
+        ConfigLoad loadConfig = new ConfigLoad();
+        loadConfig.setConfigData();
+
+        //Check if the server uses world guard
+        WorldGuardChecks CheckWorldGuardExistence = new WorldGuardChecks();
+        CheckWorldGuardExistence.initializeWorldGuardPresent();
+
 
         new BukkitRunnable() {
             @Override
@@ -72,9 +86,6 @@ public final class FreeRPG extends JavaPlugin implements Listener {
             }
         }.runTaskLater(plugin, 20);
 
-        //config Load
-        ConfigLoad loadConfig = new ConfigLoad();
-        loadConfig.setConfigData();
 
         System.out.println("FreeRPG loaded sucessfully...");
         System.out.println("Running FreeRPG version " + version);
@@ -128,6 +139,7 @@ public final class FreeRPG extends JavaPlugin implements Listener {
 
         getCommand("frpg").setExecutor(new FrpgCommands());
         getCommand("spite").setExecutor(new SpiteQuote());
+
         /*
 
         Old unique commands, replaced by new command /frpg [...]

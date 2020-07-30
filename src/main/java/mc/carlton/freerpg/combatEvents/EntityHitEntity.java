@@ -6,6 +6,8 @@ import mc.carlton.freerpg.perksAndAbilities.*;
 import mc.carlton.freerpg.playerAndServerInfo.AbilityTracker;
 import mc.carlton.freerpg.playerAndServerInfo.ChangeStats;
 import mc.carlton.freerpg.playerAndServerInfo.PlayerStats;
+import mc.carlton.freerpg.playerAndServerInfo.WorldGuardChecks;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attributable;
 import org.bukkit.attribute.Attribute;
@@ -24,12 +26,33 @@ public class EntityHitEntity implements Listener {
     void onEntityHit(EntityDamageByEntityEvent e) {
         Random rand = new Random();
         Plugin plugin = FreeRPG.getPlugin(FreeRPG.class);
+
+        if (e.getDamager() instanceof Player && e.getEntity() instanceof Player) {
+            Player p = (Player) e.getDamager();
+            Location loc = p.getLocation();
+            WorldGuardChecks checkPVP = new WorldGuardChecks();
+            boolean canPvP = checkPVP.canPvP(p,loc);
+            if (!canPvP) {
+                return;
+            }
+        }
+
+        else if (e.getDamager() instanceof Player) {
+            Player p = (Player) e.getDamager();
+            Location loc = p.getLocation();
+            WorldGuardChecks checkPVP = new WorldGuardChecks();
+            boolean canDamageEntities = checkPVP.canDamageEntities(p,loc);
+            if (!canDamageEntities) {
+                return;
+            }
+        }
+
         if (e.getDamager() instanceof Player) {
-            Material[] shovels0 = {Material.DIAMOND_SHOVEL, Material.GOLDEN_SHOVEL, Material.IRON_SHOVEL, Material.STONE_SHOVEL, Material.WOODEN_SHOVEL};
+            Material[] shovels0 = { Material.DIAMOND_SHOVEL, Material.GOLDEN_SHOVEL, Material.IRON_SHOVEL, Material.STONE_SHOVEL, Material.WOODEN_SHOVEL};
             List<Material> shovels = Arrays.asList(shovels0);
-            Material[] swords0 = {Material.WOODEN_SWORD, Material.STONE_SWORD, Material.GOLDEN_SWORD, Material.DIAMOND_SWORD, Material.IRON_SWORD};
+            Material[] swords0 = { Material.WOODEN_SWORD, Material.STONE_SWORD, Material.GOLDEN_SWORD, Material.DIAMOND_SWORD, Material.IRON_SWORD};
             List<Material> swords = Arrays.asList(swords0);
-            Material[] axes0 = {Material.DIAMOND_AXE, Material.GOLDEN_AXE, Material.IRON_AXE, Material.STONE_AXE, Material.WOODEN_AXE};
+            Material[] axes0 = { Material.DIAMOND_AXE, Material.GOLDEN_AXE, Material.IRON_AXE, Material.STONE_AXE, Material.WOODEN_AXE};
             List<Material> axes = Arrays.asList(axes0);
 
             Player p = (Player) e.getDamager();

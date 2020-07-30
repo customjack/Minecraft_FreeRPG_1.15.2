@@ -1,5 +1,7 @@
 package mc.carlton.freerpg.commands;
 
+import mc.carlton.freerpg.gameTools.LanguageSelector;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -11,11 +13,11 @@ public class SpiteQuote implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (sender instanceof Player) {
             Player p = (Player) sender;
-            String version = "Beta 1.0";
-            p.sendMessage("Everything good is made of spite");
-            System.out.println("[COMMAND_OUT] Running FreeRPG version " + version);
+            LanguageSelector langManager = new LanguageSelector(p);
+            p.sendMessage(ChatColor.ITALIC + langManager.getString("spite"));
         } else {
-            System.out.println("You need to be a player to cast this command");
+            String version = "v1.0.7";
+            System.out.println("[COMMAND_OUT] Running FreeRPG version " + version);
         }
         return true;
     }

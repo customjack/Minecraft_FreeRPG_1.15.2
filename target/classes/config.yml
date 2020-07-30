@@ -1,3 +1,6 @@
+general:
+  playerBaseHP: 20.0
+  defaultLanguage: enUs
 multipliers:
   globalMultiplier: 1.0
   diggingMultiplier: 1.0
@@ -202,3 +205,6 @@ smelting:
   maxLevel: -1
 enchanting:
   maxLevel: -1
+
+
+
