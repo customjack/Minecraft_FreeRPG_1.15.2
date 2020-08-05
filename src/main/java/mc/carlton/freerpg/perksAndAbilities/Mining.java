@@ -176,6 +176,10 @@ public class Mining {
                 world.dropItemNaturally(loc, new ItemStack(Material.REDSTONE,1));
                 increaseStats.changeEXP("mining",100);
             }
+            else if (randomNum2 < 0.999){
+                world.dropItemNaturally(loc, new ItemStack(Material.DIAMOND,1));
+                increaseStats.changeEXP("mining",9000);
+            }
             else {
                 world.dropItemNaturally(loc, new ItemStack(Material.DIAMOND,1));
                 increaseStats.changeEXP("mining",9000);
@@ -280,10 +284,12 @@ public class Mining {
         }
     }
 
-    public void getVeinOres(Block b1, final int x1, final int y1, final int z1) {
+    public void getVeinOres(Block b1, final int x1, final int y1, final int z1, Material oreType) {
         WorldGuardChecks BuildingCheck = new WorldGuardChecks();
         int searchCubeSize = 7;
-        Material ore = b1.getType();
+        if (veinOres.size() > 29) {
+            return;
+        }
         for (int x = -1; x <= 1; x++) {
             for (int y = -1; y <= 1; y++) {
                 for (int z = -1; z <= 1; z++) {
@@ -291,14 +297,17 @@ public class Mining {
                         continue;
                     }
                     Block b2 = b1.getRelative(x, y, z);
-                    if (b2.getType().equals(ore)) {
+                    if (b2.getType().equals(oreType)) {
                         if (b2.getX() > x1 + searchCubeSize || b2.getX() < x1 - searchCubeSize || b2.getY() > y1 + searchCubeSize || b2.getY() < y1 - searchCubeSize || b2.getZ() > z1 + searchCubeSize || b2.getZ() < z1 - searchCubeSize) {
                             break;
                         }
                         else if (!(veinOres.contains(b2))) {
+                            if (veinOres.size() > 29) {
+                                return;
+                            }
                             if (BuildingCheck.canBuild(p, b2.getLocation())) {
                                 veinOres.add(b2);
-                                this.getVeinOres(b2, x1, y1, z1);
+                                this.getVeinOres(b2, x1, y1, z1,oreType);
                             }
                         }
                     }
@@ -322,7 +331,7 @@ public class Mining {
             return;
         }
         ArrayList<Location> blocksLocations = placedClass.getBlocks();
-        getVeinOres(initialBlock,initialBlock.getX(),initialBlock.getY(),initialBlock.getZ()); //Get Ores in Vein
+        getVeinOres(initialBlock,initialBlock.getX(),initialBlock.getY(),initialBlock.getZ(),initialBlock.getType()); //Get Ores in Vein
         int numOres = veinOres.size();
         int totalOres = numOres;
         int doubleDropsLevel = (int)pStat.get("mining").get(5);
@@ -418,7 +427,9 @@ public class Mining {
                 increaseStats.changeEXP("smelting",320*totalOres);
             }
         }
-        increaseStats.changeEXP("mining",getEXP(initialBlock.getType())*numOres);
+        System.out.println(numOres);
+        increaseStats.changeEXP("mining",getEXP(blockType)*numOres);
+        System.out.println(getEXP(blockType)*numOres);
     }
     public void damageTool() {
         ItemMeta toolMeta = itemInHand.getItemMeta();
@@ -433,6 +444,7 @@ public class Mining {
     }
     public int getEXP(Material brokenOre) {
         int EXP = 0;
+        System.out.println(brokenOre);
         switch (brokenOre) {
             case COAL_ORE:
                 EXP = 300;
