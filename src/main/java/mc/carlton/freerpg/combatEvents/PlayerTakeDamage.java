@@ -6,6 +6,7 @@ import mc.carlton.freerpg.perksAndAbilities.Global;
 import mc.carlton.freerpg.playerAndServerInfo.PlayerStats;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 
@@ -15,8 +16,11 @@ import java.util.Random;
 
 public class PlayerTakeDamage implements Listener {
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGH)
     void onPlayerTakeDamage(EntityDamageEvent e){
+        if (e.isCancelled()) {
+            return;
+        }
         if (e.getEntity() instanceof Player) {
             Player p = (Player) e.getEntity();
             PlayerStats pStatClass = new PlayerStats(p);

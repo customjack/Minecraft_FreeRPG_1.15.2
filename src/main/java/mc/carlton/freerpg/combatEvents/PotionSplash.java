@@ -6,6 +6,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.ThrownPotion;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PotionSplashEvent;
 import org.bukkit.inventory.ItemStack;
@@ -14,14 +15,20 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 public class PotionSplash implements Listener {
     Plugin plugin = FreeRPG.getPlugin(FreeRPG.class);
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGH)
     void onPotionSplash(PotionSplashEvent e){
-        PotionEffectType[] harmfulEffects0 = {PotionEffectType.WEAKNESS,PotionEffectType.POISON,PotionEffectType.BLINDNESS,PotionEffectType.HUNGER,
-                                              PotionEffectType.HARM,PotionEffectType.SLOW_DIGGING,PotionEffectType.SLOW,PotionEffectType.WEAKNESS,PotionEffectType.WITHER};
+        if (e.isCancelled()) {
+            return;
+        }
+        PotionEffectType[] harmfulEffects0 = {PotionEffectType.WEAKNESS, PotionEffectType.POISON, PotionEffectType.BLINDNESS, PotionEffectType.HUNGER,
+                                              PotionEffectType.HARM, PotionEffectType.SLOW_DIGGING, PotionEffectType.SLOW, PotionEffectType.WEAKNESS, PotionEffectType.WITHER};
         List<PotionEffectType> harmfulEffects = Arrays.asList(harmfulEffects0);
 
         ThrownPotion potionEntity = e.getPotion();

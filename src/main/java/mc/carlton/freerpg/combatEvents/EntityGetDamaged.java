@@ -1,17 +1,25 @@
 package mc.carlton.freerpg.combatEvents;
 
 import mc.carlton.freerpg.playerAndServerInfo.PlayerStats;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.Tameable;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Map;
 
 public class EntityGetDamaged implements Listener {
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGH)
 
     void onEntityDamaged(EntityDamageEvent e) {
+        if (e.isCancelled()) {
+            return;
+        }
         if (e.getEntity() instanceof Entity) {
             Entity wolf = e.getEntity();
             if (wolf.getType() == EntityType.WOLF) {

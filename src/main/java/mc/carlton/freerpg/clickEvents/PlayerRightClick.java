@@ -3,15 +3,13 @@ package mc.carlton.freerpg.clickEvents;
 import mc.carlton.freerpg.FreeRPG;
 import mc.carlton.freerpg.gameTools.LanguageSelector;
 import mc.carlton.freerpg.perksAndAbilities.*;
-import mc.carlton.freerpg.playerAndServerInfo.AbilityTracker;
-import mc.carlton.freerpg.playerAndServerInfo.ChangeStats;
-import mc.carlton.freerpg.playerAndServerInfo.PlayerStats;
-import mc.carlton.freerpg.playerAndServerInfo.WorldGuardChecks;
-import org.bukkit.*;
+import mc.carlton.freerpg.playerAndServerInfo.*;
+import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -142,34 +140,21 @@ public class PlayerRightClick implements Listener {
             //Explosions
             if (itemInHandType == Material.FLINT_AND_STEEL) {
                 Block blockLit = e.getClickedBlock();
+                if (blockLit == null) {
+                    return;
+                }
                 WorldGuardChecks BuildingCheck = new WorldGuardChecks();
+                ConfigLoad canExplode = new ConfigLoad();
+                if (!canExplode.isAllowExplosions()) {
+                    return;
+                }
                 if (!BuildingCheck.canBuild(p, blockLit.getLocation())) {
                     return;
                 }
                 if (blockLit.getType() == Material.TNT) {
                     e.setCancelled(true);
-                    blockLit.setType(Material.AIR);
-                    World world = p.getWorld();
-                    TNTPrimed tnt = world.spawn(blockLit.getLocation().add(0, 0.25, 0), TNTPrimed.class);
-                    int blastRadiusLevel = (int) pStat.get("mining").get(10);
-                    double power0 = 4 + blastRadiusLevel * 0.5;
-                    float power = (float) power0;
-                    tnt.setFuseTicks(41);
-                    Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
-                        @Override
-                        public void run() {
-                            Location tntLoc = tnt.getLocation();
-                            tnt.getWorld().createExplosion(tntLoc, power, false, true);
-                            tnt.remove();
-                            increaseStats.changeEXP("mining", 1000);
-                            int passive3_mining = (int) pStat.get("mining").get(6);
-                            double explosionDrop = passive3_mining * 0.0001;
-                            for (int i = 0; i < 10; i++) {
-                                Mining miningClass = new Mining(p);
-                                miningClass.miningTreasureDrop(explosionDrop, world, tntLoc);
-                            }
-                        }
-                    }, 40L);
+                    Mining miningClass = new Mining(p);
+                    miningClass.tntExplode(blockLit);
                 }
             }
 

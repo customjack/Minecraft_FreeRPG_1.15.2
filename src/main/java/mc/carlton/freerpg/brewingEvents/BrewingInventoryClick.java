@@ -8,6 +8,7 @@ import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -31,8 +32,11 @@ import java.util.Map;
 
 public class BrewingInventoryClick implements Listener {
     Plugin plugin = FreeRPG.getPlugin(FreeRPG.class);
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGH)
     void onInventoryClick(InventoryClickEvent e) {
+        if (e.isCancelled()) {
+            return;
+        }
         try {
             InventoryType invType = e.getClickedInventory().getType();
         } catch (Exception except) {
@@ -61,11 +65,11 @@ public class BrewingInventoryClick implements Listener {
             return;
         }
         if (e.getClickedInventory() instanceof BrewerInventory) {
-            Material[] newIngredients0 = {Material.EMERALD,Material.SLIME_BALL,Material.CLOCK,Material.POISONOUS_POTATO,Material.GOLDEN_APPLE};
+            Material[] newIngredients0 = {Material.EMERALD, Material.SLIME_BALL, Material.CLOCK, Material.POISONOUS_POTATO, Material.GOLDEN_APPLE};
             List<Material> newIngredients = Arrays.asList(newIngredients0);
-            Material[] oldIngredients0 = {Material.NETHER_WART,Material.GUNPOWDER,Material.GLOWSTONE_DUST,Material.SPIDER_EYE,Material.GHAST_TEAR,
-                                          Material.RABBIT_FOOT,Material.BLAZE_POWDER,Material.GLISTERING_MELON_SLICE,Material.SUGAR,Material.MAGMA_CREAM,
-                                          Material.REDSTONE, Material.PUFFERFISH, Material.GOLDEN_CARROT,Material.TURTLE_HELMET,Material.PHANTOM_MEMBRANE,
+            Material[] oldIngredients0 = {Material.NETHER_WART, Material.GUNPOWDER, Material.GLOWSTONE_DUST, Material.SPIDER_EYE, Material.GHAST_TEAR,
+                                          Material.RABBIT_FOOT, Material.BLAZE_POWDER, Material.GLISTERING_MELON_SLICE, Material.SUGAR, Material.MAGMA_CREAM,
+                                          Material.REDSTONE, Material.PUFFERFISH, Material.GOLDEN_CARROT, Material.TURTLE_HELMET, Material.PHANTOM_MEMBRANE,
                                           Material.FERMENTED_SPIDER_EYE};
             List<Material> oldIngredients = Arrays.asList(oldIngredients0);
 

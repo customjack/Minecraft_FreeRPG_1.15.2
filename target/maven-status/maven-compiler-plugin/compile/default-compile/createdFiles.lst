@@ -34,6 +34,7 @@ mc\carlton\freerpg\miscEvents\PlayerConsumeItem.class
 mc\carlton\freerpg\gameTools\HorseRiding.class
 mc\carlton\freerpg\perksAndAbilities\Global$1.class
 mc\carlton\freerpg\perksAndAbilities\Mining$4.class
+mc\carlton\freerpg\playerAndServerInfo\PeriodicSaving.class
 mc\carlton\freerpg\perksAndAbilities\Farming$5.class
 mc\carlton\freerpg\perksAndAbilities\Smelting$1.class
 mc\carlton\freerpg\perksAndAbilities\Fishing$4$1.class
@@ -96,6 +97,7 @@ mc\carlton\freerpg\enchantingEvents\PlayerGetExperience.class
 mc\carlton\freerpg\perksAndAbilities\PlayerRightClick$3.class
 mc\carlton\freerpg\brewingEvents\BrewingInventoryClick$1.class
 mc\carlton\freerpg\perksAndAbilities\Woodcutting$1.class
+mc\carlton\freerpg\playerAndServerInfo\PeriodicSaving$1.class
 mc\carlton\freerpg\perksAndAbilities\PlayerRightClick$4.class
 mc\carlton\freerpg\perksAndAbilities\BeastMastery$3.class
 mc\carlton\freerpg\playerAndServerInfo\AbilityLogoutTracker.class
@@ -112,6 +114,7 @@ mc\carlton\freerpg\clickEvents\PlayerRightClick$6.class
 mc\carlton\freerpg\perksAndAbilities\PlayerRightClick$5.class
 mc\carlton\freerpg\perksAndAbilities\Defense$2$1.class
 mc\carlton\freerpg\guiCommands\CraftingGUI.class
+mc\carlton\freerpg\perksAndAbilities\Mining$3$1.class
 mc\carlton\freerpg\miscEvents\PlayerMount$1.class
 mc\carlton\freerpg\perksAndAbilities\Farming$9.class
 mc\carlton\freerpg\perksAndAbilities\Archery$1.class
@@ -154,6 +157,7 @@ mc\carlton\freerpg\playerAndServerInfo\HeldStats.class
 mc\carlton\freerpg\perksAndAbilities\Enchanting.class
 mc\carlton\freerpg\perksAndAbilities\Alchemy.class
 mc\carlton\freerpg\perksAndAbilities\Digging$2$1.class
+mc\carlton\freerpg\perksAndAbilities\Mining$6.class
 mc\carlton\freerpg\perksAndAbilities\Archery$2$1.class
 mc\carlton\freerpg\pistonEvents\PistonExtend.class
 mc\carlton\freerpg\guiEvents\MainGUIclick.class
@@ -162,7 +166,6 @@ mc\carlton\freerpg\pistonEvents\PistonRetract.class
 mc\carlton\freerpg\perksAndAbilities\Archery.class
 mc\carlton\freerpg\gameTools\ArrowTypes.class
 mc\carlton\freerpg\perksAndAbilities\Digging.class
-mc\carlton\freerpg\clickEvents\PlayerRightClick$7.class
 mc\carlton\freerpg\perksAndAbilities\Farming$2$1.class
 mc\carlton\freerpg\perksAndAbilities\Archery$5.class
 mc\carlton\freerpg\combatEvents\PlayerKillEntity.class

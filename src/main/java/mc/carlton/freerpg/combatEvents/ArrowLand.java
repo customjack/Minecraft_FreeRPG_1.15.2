@@ -18,7 +18,7 @@ public class ArrowLand implements Listener {
                     Player p = (Player) shooter;
                     Archery archeryClass = new Archery(p);
                     archeryClass.retrievalRemoval(projectile);
-                    archeryClass.explosiveArrows(projectile);
+
                 }
             }
         }
