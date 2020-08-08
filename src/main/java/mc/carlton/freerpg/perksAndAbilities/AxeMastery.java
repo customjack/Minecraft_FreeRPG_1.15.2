@@ -24,7 +24,7 @@ public class AxeMastery {
     private Player p;
     private String pName;
     private ItemStack itemInHand;
-    private Map<Enchantment, Integer> enchantmentLevelMap = new HashMap<>();
+    private Map<Enchantment,Integer> enchantmentLevelMap = new HashMap<>();
 
     ChangeStats increaseStats; //Changing Stats
 
@@ -46,7 +46,7 @@ public class AxeMastery {
 
     Random rand = new Random(); //Random class Import
 
-    Material[] axes0 = {Material.DIAMOND_AXE, Material.GOLDEN_AXE, Material.IRON_AXE, Material.STONE_AXE, Material.WOODEN_AXE};
+    Material[] axes0 = {Material.DIAMOND_AXE,Material.GOLDEN_AXE,Material.IRON_AXE, Material.STONE_AXE,Material.WOODEN_AXE};
     List<Material> axes = Arrays.asList(axes0);
 
 
@@ -141,7 +141,7 @@ public class AxeMastery {
         }.runTaskLater(plugin, duration);
     }
 
-    public void greaterAxe(Entity entity, World world, double finalDamage) {
+    public void greaterAxe(Entity entity, World world,double finalDamage) {
         Integer[] pAbilities = abilities.getPlayerAbilities();
         Map<String, ArrayList<Number>> pStat = pStatClass.getPlayerData();
         if (pAbilities[9] == -2) {
@@ -165,8 +165,8 @@ public class AxeMastery {
                     increaseStats.changeEXP("axeMastery",(int) Math.round(finalDamage*0.25*3)*10);
                 }
             }
-            for (int x = -1*(int) Math.ceil(radius/2.0); x <= (int) Math.ceil(radius/2.0); x++ ) {
-                for (int z = -1*(int) Math.ceil(radius/2.0); z <= (int) Math.ceil(radius/2.0); z++ ) {
+            for (int x = -1*(int)Math.ceil(radius/2.0); x <= (int)Math.ceil(radius/2.0); x++ ) {
+                for (int z = -1*(int)Math.ceil(radius/2.0); z <= (int)Math.ceil(radius/2.0); z++ ) {
                     Block b = blockAboveGround.getRelative(x,0,z);
                     Block below = b.getRelative(0,-1,0);
                     Material blockType = below.getType();
@@ -244,7 +244,7 @@ public class AxeMastery {
         }
     }
 
-    public void holyAxe(Entity entity, World world, double finalDamage) {
+    public void holyAxe(Entity entity,World world,double finalDamage) {
         if (entity instanceof LivingEntity) {
             if (((LivingEntity) entity).getHealth() < finalDamage) {
                 return;
@@ -260,7 +260,7 @@ public class AxeMastery {
 
     public void giveHitEXP(double finalDamage) {
         increaseStats.changeEXP("axeMastery",20);
-        increaseStats.changeEXP("axeMastery", (int) Math.round(finalDamage * 5) * 10);
+        increaseStats.changeEXP("axeMastery", (int) Math.round(finalDamage * 10) * 10);
     }
 
     public void giveKillEXP(Entity entity) {
@@ -276,10 +276,10 @@ public class AxeMastery {
                     case ZOMBIE:
                     case CAVE_SPIDER:
                     case SPIDER:
-                        increaseStats.changeEXP("axeMastery", 250);
+                        increaseStats.changeEXP("axeMastery", 120);
                         break;
                     case CREEPER:
-                        increaseStats.changeEXP("axeMastery",750);
+                        increaseStats.changeEXP("axeMastery",200);
                         break;
                     case WITHER:
                         increaseStats.changeEXP("axeMastery",30000);
@@ -288,7 +288,7 @@ public class AxeMastery {
                         increaseStats.changeEXP("axeMastery",10000);
                         break;
                     default:
-                        increaseStats.changeEXP("axeMastery", 400);
+                        increaseStats.changeEXP("axeMastery", 100);
                         break;
                 }
             }
@@ -298,7 +298,7 @@ public class AxeMastery {
                         increaseStats.changeEXP("axeMastery",50000);
                         break;
                     case IRON_GOLEM:
-                        increaseStats.changeEXP("axeMastery", 500);
+                        increaseStats.changeEXP("axeMastery", 300);
                         break;
                     case BEE:
                     case DOLPHIN:
@@ -306,10 +306,10 @@ public class AxeMastery {
                     case POLAR_BEAR:
                     case TRADER_LLAMA:
                     case WOLF:
-                        increaseStats.changeEXP("axeMastery",250);
+                        increaseStats.changeEXP("axeMastery",125);
                         break;
                     default:
-                        increaseStats.changeEXP("axeMastery",100);
+                        increaseStats.changeEXP("axeMastery",50);
                         break;
                 }
             }

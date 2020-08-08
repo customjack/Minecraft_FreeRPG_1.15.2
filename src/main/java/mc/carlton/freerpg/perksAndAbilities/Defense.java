@@ -41,14 +41,13 @@ public class Defense {
 
     Random rand = new Random(); //Random class Import
 
-    EntityType[] hostileMobs0 = {EntityType.SPIDER, EntityType.CAVE_SPIDER, EntityType.ENDERMAN, EntityType.PIG_ZOMBIE,
-            EntityType.BLAZE, EntityType.CREEPER, EntityType.DROWNED, EntityType.ELDER_GUARDIAN,
-            EntityType.ENDERMITE, EntityType.EVOKER, EntityType.GHAST, EntityType.GUARDIAN,
-            EntityType.HUSK, EntityType.MAGMA_CUBE, EntityType.PHANTOM, EntityType.PILLAGER,
-            EntityType.RAVAGER, EntityType.SHULKER, EntityType.SKELETON, EntityType.SLIME,
-            EntityType.STRAY, EntityType.VEX, EntityType.VINDICATOR, EntityType.WITCH,
-            EntityType.WITHER_SKELETON, EntityType.ZOMBIE, EntityType.ZOMBIE_VILLAGER,
-            };
+    EntityType[] hostileMobs0 = {EntityType.SPIDER,EntityType.CAVE_SPIDER,EntityType.ENDERMAN,EntityType.PIG_ZOMBIE,
+            EntityType.BLAZE,EntityType.CREEPER,EntityType.DROWNED,EntityType.ELDER_GUARDIAN,
+            EntityType.ENDERMITE,EntityType.EVOKER,EntityType.GHAST,EntityType.GUARDIAN,
+            EntityType.HUSK,EntityType.MAGMA_CUBE,EntityType.PHANTOM,EntityType.PILLAGER,
+            EntityType.RAVAGER,EntityType.SHULKER,EntityType.SKELETON,EntityType.SLIME,
+            EntityType.STRAY,EntityType.VEX,EntityType.VINDICATOR,EntityType.WITCH,
+            EntityType.WITHER_SKELETON,EntityType.ZOMBIE,EntityType.ZOMBIE_VILLAGER,};
     List<EntityType> hostileMobs = Arrays.asList(hostileMobs0);
 
     public Defense(Player p) {
@@ -379,7 +378,7 @@ public class Defense {
         if (healerLevel < 1) {
             return;
         }
-        int duration = 20* Math.min(3*healerLevel,9);
+        int duration = 20*Math.min(3*healerLevel,9);
         boolean[] regenerationChecks = buffCheckerRegeneration(0,duration);
         if (regenerationChecks[0]) {
             if (regenerationChecks[1]) {
@@ -399,7 +398,7 @@ public class Defense {
 
     public void giveHitEXP(double damage) {
         increaseStats.changeEXP("defense",20);
-        increaseStats.changeEXP("defense", (int) Math.round(damage * 12) * 10);
+        increaseStats.changeEXP("defense", (int) Math.round(damage * 25) * 10);
     }
 
     public void giveKillEXP(Entity entity) {
@@ -408,7 +407,7 @@ public class Defense {
             if (entity instanceof Monster) {
                 switch (type) {
                     case CREEPER:
-                        increaseStats.changeEXP("defense",400);
+                        increaseStats.changeEXP("defense",200);
                         break;
                     case WITHER:
                         increaseStats.changeEXP("defense",30000);
@@ -417,7 +416,7 @@ public class Defense {
                         increaseStats.changeEXP("defense",10000);
                         break;
                     default:
-                        increaseStats.changeEXP("defense", 300);
+                        increaseStats.changeEXP("defense", 150);
                         break;
                 }
             }
@@ -427,7 +426,7 @@ public class Defense {
                         increaseStats.changeEXP("defense",50000);
                         break;
                     case IRON_GOLEM:
-                        increaseStats.changeEXP("defense", 750);
+                        increaseStats.changeEXP("defense", 400);
                         break;
                     case BEE:
                     case DOLPHIN:
@@ -435,7 +434,7 @@ public class Defense {
                     case POLAR_BEAR:
                     case TRADER_LLAMA:
                     case WOLF:
-                        increaseStats.changeEXP("defense",250);
+                        increaseStats.changeEXP("defense",200);
                         break;
                     default:
                         increaseStats.changeEXP("defense",80);
@@ -446,7 +445,7 @@ public class Defense {
     }
 
     public void armorEXP(ItemStack armor) {
-        Map<Material, Integer> armorEXP = new HashMap<>();
+        Map<Material,Integer> armorEXP = new HashMap<>();
         armorEXP.put(Material.LEATHER_BOOTS,200*3);
         armorEXP.put(Material.LEATHER_LEGGINGS,350*3);
         armorEXP.put(Material.LEATHER_CHESTPLATE,400*3);
@@ -466,7 +465,6 @@ public class Defense {
         armorEXP.put(Material.DIAMOND_LEGGINGS,350*10);
         armorEXP.put(Material.DIAMOND_CHESTPLATE,400*10);
         armorEXP.put(Material.DIAMOND_HELMET,250*10);
-
 
         if (armorEXP.keySet().contains(armor.getType())) {
             increaseStats.changeEXP("defense",armorEXP.get(armor.getType()));

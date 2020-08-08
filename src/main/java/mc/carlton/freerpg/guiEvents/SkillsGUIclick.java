@@ -11,7 +11,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
 
@@ -235,7 +234,7 @@ public class SkillsGUIclick implements Listener {
                                     break;
                                 case "agility":
                                     if ((int) pStats.get(13) > 0) {
-                                        p.performCommand("frpg speedTogggle");
+                                        p.performCommand("frpg speedToggle");
                                         p.performCommand("frpg skillTreeGUI " + skillName);
                                     }
                                     break;

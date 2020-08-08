@@ -16,9 +16,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 public class Archery {
     Plugin plugin = FreeRPG.getPlugin(FreeRPG.class);
@@ -131,7 +129,7 @@ public class Archery {
         }.runTaskLater(plugin, duration).getTaskId();
     }
 
-    public void rapidFire(Entity projectile, ItemStack bow) {
+    public void rapidFire(Entity projectile,ItemStack bow) {
         Integer[] pAbilities = abilities.getPlayerAbilities();
         Map<String, ArrayList<Number>> pStat = pStatClass.getPlayerData();
         int sniperLevel = (int) pStat.get("archery").get(8);
@@ -161,7 +159,7 @@ public class Archery {
         }
     }
 
-    public void retrieval(Entity projectile, ItemStack bow) {
+    public void retrieval(Entity projectile,ItemStack bow) {
         if (bow.getEnchantments().containsKey(Enchantment.ARROW_INFINITE)) {
             return;
         }
@@ -273,7 +271,7 @@ public class Archery {
 
     public void giveHitEXP(double finalDamage) {
         increaseStats.changeEXP("archery",50);
-        increaseStats.changeEXP("archery", (int) Math.round(finalDamage * 8) * 10);
+        increaseStats.changeEXP("archery", (int) Math.round(finalDamage * 16) * 10);
     }
 
     public void giveKillEXP(Entity entity) {
@@ -286,10 +284,10 @@ public class Archery {
                     case ZOMBIE:
                     case CAVE_SPIDER:
                     case SPIDER:
-                        increaseStats.changeEXP("archery", 400);
+                        increaseStats.changeEXP("archery", 200);
                         break;
                     case CREEPER:
-                        increaseStats.changeEXP("archery",1000);
+                        increaseStats.changeEXP("archery",250);
                         break;
                     case WITHER:
                         increaseStats.changeEXP("archery",30000);
@@ -298,7 +296,7 @@ public class Archery {
                         increaseStats.changeEXP("archery",10000);
                         break;
                     default:
-                        increaseStats.changeEXP("archery", 600);
+                        increaseStats.changeEXP("archery", 150);
                         break;
                 }
             }
@@ -308,7 +306,7 @@ public class Archery {
                         increaseStats.changeEXP("archery",50000);
                         break;
                     case IRON_GOLEM:
-                        increaseStats.changeEXP("archery", 750);
+                        increaseStats.changeEXP("archery", 350);
                         break;
                     case BEE:
                     case DOLPHIN:
@@ -316,10 +314,10 @@ public class Archery {
                     case POLAR_BEAR:
                     case TRADER_LLAMA:
                     case WOLF:
-                        increaseStats.changeEXP("archery",375);
+                        increaseStats.changeEXP("archery",225);
                         break;
                     default:
-                        increaseStats.changeEXP("archery",150);
+                        increaseStats.changeEXP("archery",75);
                         break;
                 }
             }
