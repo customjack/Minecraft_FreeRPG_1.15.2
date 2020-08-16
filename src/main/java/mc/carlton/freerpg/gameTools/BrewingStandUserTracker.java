@@ -3,11 +3,11 @@ package mc.carlton.freerpg.gameTools;
 import org.bukkit.block.BrewingStand;
 import org.bukkit.entity.Player;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class BrewingStandUserTracker {
-    static Map<BrewingStand, Player> standPlayerMap = new HashMap<>();
+    static Map<BrewingStand, Player> standPlayerMap = new ConcurrentHashMap<>();
 
     public void addstand(BrewingStand stand, Player player) {
         if (stand instanceof BrewingStand) {

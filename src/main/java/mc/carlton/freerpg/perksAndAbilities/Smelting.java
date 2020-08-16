@@ -42,7 +42,7 @@ public class Smelting {
         this.pStatClass = new PlayerStats(p);
     }
 
-    public void speedUpFurnace(Furnace furnace,boolean isBlastFurnace) {
+    public void speedUpFurnace(Furnace furnace, boolean isBlastFurnace) {
         Map<String, ArrayList<Number>> pStat = pStatClass.getPlayerData();
         int fastFuelLevel = (int) pStat.get("smelting").get(4);
         int doubleSmeltLevel = (int) pStat.get("smelting").get(9);
@@ -62,19 +62,21 @@ public class Smelting {
         new BukkitRunnable() {
             @Override
             public void run() {
-                furnace.setCookTimeTotal((int)Math.round(finalDefaultCookTime /speedUpFactor));
+                furnace.setCookTimeTotal((int) Math.round(finalDefaultCookTime / speedUpFactor));
                 FurnaceInventory oldInv = furnace.getSnapshotInventory();
-                oldInv.setSmelting(furnaceInv.getSmelting());
-                if (finalDoubleSmelt) {
-                    ItemStack result = furnaceInv.getResult();
-                    int resultAmount = result.getAmount();
-                    result.setAmount(resultAmount+1);
-                    oldInv.setResult(result);
+                if (oldInv.getResult() == null) {
+                    increaseStats.changeEXP("smelting", 100);
                 }
                 else {
-                    oldInv.setResult(furnaceInv.getResult());
+                    oldInv.setSmelting(furnaceInv.getSmelting());
+                    ItemStack result = furnaceInv.getResult();
+                    if (finalDoubleSmelt) {
+                        int resultAmount = result.getAmount();
+                        result.setAmount(resultAmount + 1);
+                    }
+                    oldInv.setResult(result);
+                    increaseStats.changeEXP("smelting", getEXP(oldInv.getResult().getType()));
                 }
-                increaseStats.changeEXP("smelting",getEXP(oldInv.getResult().getType()));
                 furnace.update();
             }
         }.runTaskLater(plugin, 1);
@@ -82,7 +84,7 @@ public class Smelting {
 
     }
 
-    public void fuelBurn(Furnace furnace,boolean isBlastFurnace) {
+    public void fuelBurn(Furnace furnace, boolean isBlastFurnace) {
         World world = furnace.getWorld();
         Map<String, ArrayList<Number>> pStat = pStatClass.getPlayerData();
         int fastFuelLevel = (int) pStat.get("smelting").get(4);
@@ -95,7 +97,7 @@ public class Smelting {
         double burnLengthMultiplier = 1 + fuelEfficiencyLevel*0.2;
         Location furnaceLoc = furnace.getLocation();
 
-        furnace.setCookTimeTotal((int)Math.floor(defaultCookTime /speedUpFactor));
+        furnace.setCookTimeTotal((int) Math.floor(defaultCookTime /speedUpFactor));
         ItemStack fuel = furnace.getSnapshotInventory().getFuel();
         fuel.setAmount(fuel.getAmount()-1);
         furnace.getSnapshotInventory().setFuel(fuel);
@@ -112,7 +114,7 @@ public class Smelting {
         }.runTaskLater(plugin, 1);
     }
 
-    public void flamePick(Block block,World world) {
+    public void flamePick(Block block, World world, Material blockType) {
         Map<String, ArrayList<Number>> pStat = pStatClass.getPlayerData();
         int doubleDropLevel = (int) pStat.get("mining").get(5);
         int doubleDropWoodcuttingLevel = (int) pStat.get("woodcutting").get(5);
@@ -125,7 +127,7 @@ public class Smelting {
             dropAmount *= 2;
         }
         world.spawnParticle(Particle.FLAME, block.getLocation(), 5);
-        switch (block.getType()) {
+        switch (blockType) {
             case IRON_ORE:
                 block.setType(Material.AIR);
                 if (chanceDrop > rand.nextDouble()) {
@@ -326,6 +328,9 @@ public class Smelting {
             case GOLD_NUGGET:
                 EXP = 390;
                 break;
+                //1.16 Items, Subject to EXP changes
+            case CRACKED_STONE_BRICKS:
+                EXP = 140;
             default:
                 break;
         }

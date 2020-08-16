@@ -3,21 +3,26 @@ package mc.carlton.freerpg.perksAndAbilities;
 import mc.carlton.freerpg.FreeRPG;
 import mc.carlton.freerpg.gameTools.ActionBarMessages;
 import mc.carlton.freerpg.gameTools.LanguageSelector;
+import mc.carlton.freerpg.gameTools.TrackItem;
 import mc.carlton.freerpg.playerAndServerInfo.*;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attributable;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
+import java.time.Instant;
 import java.util.*;
 
 public class Swordsmanship {
@@ -41,19 +46,19 @@ public class Swordsmanship {
     LanguageSelector lang;
 
     Random rand = new Random(); //Random class Import
-    EntityType[] hostileMobs0 = {EntityType.SPIDER,EntityType.CAVE_SPIDER,EntityType.ENDERMAN,EntityType.PIG_ZOMBIE,
-            EntityType.BLAZE,EntityType.CREEPER,EntityType.DROWNED,EntityType.ELDER_GUARDIAN,
-            EntityType.ENDERMITE,EntityType.EVOKER,EntityType.GHAST,EntityType.GUARDIAN,
-            EntityType.HUSK,EntityType.MAGMA_CUBE,EntityType.PHANTOM,EntityType.PILLAGER,
-            EntityType.RAVAGER,EntityType.SHULKER,EntityType.SKELETON,EntityType.SLIME,
-            EntityType.STRAY,EntityType.VEX,EntityType.VINDICATOR,EntityType.WITCH,
-            EntityType.WITHER_SKELETON,EntityType.ZOMBIE,EntityType.ZOMBIE_VILLAGER};
+    EntityType[] hostileMobs0 = {EntityType.SPIDER, EntityType.CAVE_SPIDER, EntityType.ENDERMAN, EntityType.PIG_ZOMBIE,
+            EntityType.BLAZE, EntityType.CREEPER, EntityType.DROWNED, EntityType.ELDER_GUARDIAN,
+            EntityType.ENDERMITE, EntityType.EVOKER, EntityType.GHAST, EntityType.GUARDIAN,
+            EntityType.HUSK, EntityType.MAGMA_CUBE, EntityType.PHANTOM, EntityType.PILLAGER,
+            EntityType.RAVAGER, EntityType.SHULKER, EntityType.SKELETON, EntityType.SLIME,
+            EntityType.STRAY, EntityType.VEX, EntityType.VINDICATOR, EntityType.WITCH,
+            EntityType.WITHER_SKELETON, EntityType.ZOMBIE, EntityType.ZOMBIE_VILLAGER};
     List<EntityType> hostileMobs = Arrays.asList(hostileMobs0);
-    EntityType[] thirstMobs0 = {EntityType.PIG_ZOMBIE, EntityType.DROWNED,EntityType.ELDER_GUARDIAN, EntityType.EVOKER,EntityType.GUARDIAN,
-                                EntityType.HUSK,EntityType.PILLAGER, EntityType.RAVAGER, EntityType.VINDICATOR,EntityType.WITCH, EntityType.ZOMBIE,EntityType.ZOMBIE_VILLAGER};
+    EntityType[] thirstMobs0 = {EntityType.PIG_ZOMBIE, EntityType.DROWNED, EntityType.ELDER_GUARDIAN, EntityType.EVOKER, EntityType.GUARDIAN,
+                                EntityType.HUSK, EntityType.PILLAGER, EntityType.RAVAGER, EntityType.VINDICATOR, EntityType.WITCH, EntityType.ZOMBIE, EntityType.ZOMBIE_VILLAGER};
     List<EntityType> thirstMobs = Arrays.asList(thirstMobs0);
 
-    Material[] swords0 = {Material.WOODEN_SWORD,Material.STONE_SWORD,Material.GOLDEN_SWORD,Material.DIAMOND_SWORD,Material.IRON_SWORD};
+    Material[] swords0 = { Material.WOODEN_SWORD, Material.STONE_SWORD, Material.GOLDEN_SWORD, Material.DIAMOND_SWORD, Material.IRON_SWORD};
     List<Material> swords = Arrays.asList(swords0);
 
     public Swordsmanship(Player p) {
@@ -121,6 +126,14 @@ public class Swordsmanship {
             itemInHand.addUnsafeEnchantment(Enchantment.DAMAGE_ALL,sharpLevel+1);
         }
 
+        //Mark the item
+        long unixTime = Instant.now().getEpochSecond();
+        String keyName = p.getUniqueId().toString() + "-" + String.valueOf(unixTime) + "-" + "swordsmanship";
+        NamespacedKey key = new NamespacedKey(plugin,keyName);
+        ItemMeta itemMeta = itemInHand.getItemMeta();
+        itemMeta.getPersistentDataContainer().set(key, PersistentDataType.STRING,"nothing");
+        itemInHand.setItemMeta(itemMeta);
+
         ((Attributable) p).getAttribute(Attribute.GENERIC_ATTACK_SPEED).setBaseValue(1024.0);
         timers.setPlayerTimer( "swordsmanship", finalCooldown);
         Bukkit.getScheduler().cancelTask(pAbilities[7]);
@@ -128,6 +141,11 @@ public class Swordsmanship {
         int taskID = new BukkitRunnable() {
             @Override
             public void run() {
+                TrackItem trackItem = new TrackItem();
+                ItemStack potentialAbilityItem = trackItem.findTrackedItemInInventory(p,key);
+                if (potentialAbilityItem != null) {
+                    itemInHand = potentialAbilityItem;
+                }
                 actionMessage.sendMessage(ChatColor.RED + ChatColor.BOLD.toString() + ">>>" + lang.getString("swiftStrikes") + " " + lang.getString("ended") + "<<<");
                 abilities.setPlayerAbility( "swordsmanship", -1);
                 ((Attributable) p).getAttribute(Attribute.GENERIC_ATTACK_SPEED).setBaseValue(4.0);
@@ -160,11 +178,11 @@ public class Swordsmanship {
             }
         }.runTaskLater(plugin, duration).getTaskId();
         AbilityLogoutTracker incaseLogout = new AbilityLogoutTracker(p);
-        incaseLogout.setPlayerItem(p,"swordsmanship",itemInHand);
+        incaseLogout.setPlayerItem(p,"swordsmanship",key);
         incaseLogout.setPlayerTask(p,"swordsmanship",taskID);
     }
 
-    public void preventLogoutTheft(int taskID_swordsmanship,ItemStack itemInHand_swords) {
+    public void preventLogoutTheft(int taskID_swordsmanship, ItemStack itemInHand_swords) {
         Integer[] pAbilities = abilities.getPlayerAbilities();
         Map<String, ArrayList<Number>> pStat = pStatClass.getPlayerData();
         int sharperLevel = (int) pStat.get("swordsmanship").get(12);
@@ -183,7 +201,7 @@ public class Swordsmanship {
                     cooldown = 200;
                 }
                 int finalCooldown = cooldown;
-                actionMessage.sendMessage(ChatColor.RED+ChatColor.BOLD.toString() + ">>>"+lang.getString("magicForce")+"<<<");
+                actionMessage.sendMessage(ChatColor.RED+ ChatColor.BOLD.toString() + ">>>"+lang.getString("magicForce")+"<<<");
                 abilities.setPlayerAbility( "swordsmanship", -1);
                 for(int i = 1; i < finalCooldown+1; i++) {
                     int timeRemaining = finalCooldown - i;
@@ -230,6 +248,7 @@ public class Swordsmanship {
                 public void run() {
                     if (!entity.isDead()) {
                         LivingEntity aliveEntity = (LivingEntity) entity;
+                        double hpRemaining = aliveEntity.getHealth();
                         Vector knockback = aliveEntity.getVelocity();
                         aliveEntity.setNoDamageTicks(0);
                         if (aliveEntity instanceof Player) {
@@ -237,7 +256,7 @@ public class Swordsmanship {
                             increaseStats.changeEXP("swordsmanship", (int) 75);
                         }
                         else {
-                            aliveEntity.damage(damage * 0.5);
+                            aliveEntity.damage(Math.min(damage * 0.5,hpRemaining-1));
                             increaseStats.changeEXP("swordsmanship", (int) Math.round(damage * 1.5) * 10);
                         }
                         aliveEntity.setVelocity(knockback.multiply(2));

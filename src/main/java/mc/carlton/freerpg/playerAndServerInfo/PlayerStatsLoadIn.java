@@ -184,7 +184,7 @@ public class PlayerStatsLoadIn {
                 }
                 }
             playerData.save(f);
-            System.out.println("Saved " + pName + " stats successfully");
+            System.out.println("[FreeRPG] Saved " + pName + " stats successfully");
             }
     }
 }

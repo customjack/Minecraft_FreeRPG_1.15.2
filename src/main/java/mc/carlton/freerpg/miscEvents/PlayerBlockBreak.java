@@ -237,7 +237,7 @@ public class PlayerBlockBreak implements Listener {
             }
             else {
                 Smelting smeltingClass = new Smelting(p);
-                smeltingClass.flamePick(block, world);
+                smeltingClass.flamePick(block, world,blockType);
             }
         }
 

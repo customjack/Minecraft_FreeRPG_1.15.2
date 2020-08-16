@@ -41,13 +41,13 @@ public class Defense {
 
     Random rand = new Random(); //Random class Import
 
-    EntityType[] hostileMobs0 = {EntityType.SPIDER,EntityType.CAVE_SPIDER,EntityType.ENDERMAN,EntityType.PIG_ZOMBIE,
-            EntityType.BLAZE,EntityType.CREEPER,EntityType.DROWNED,EntityType.ELDER_GUARDIAN,
-            EntityType.ENDERMITE,EntityType.EVOKER,EntityType.GHAST,EntityType.GUARDIAN,
-            EntityType.HUSK,EntityType.MAGMA_CUBE,EntityType.PHANTOM,EntityType.PILLAGER,
-            EntityType.RAVAGER,EntityType.SHULKER,EntityType.SKELETON,EntityType.SLIME,
-            EntityType.STRAY,EntityType.VEX,EntityType.VINDICATOR,EntityType.WITCH,
-            EntityType.WITHER_SKELETON,EntityType.ZOMBIE,EntityType.ZOMBIE_VILLAGER,};
+    EntityType[] hostileMobs0 = {EntityType.SPIDER, EntityType.CAVE_SPIDER, EntityType.ENDERMAN, EntityType.PIG_ZOMBIE,
+            EntityType.BLAZE, EntityType.CREEPER, EntityType.DROWNED, EntityType.ELDER_GUARDIAN,
+            EntityType.ENDERMITE, EntityType.EVOKER, EntityType.GHAST, EntityType.GUARDIAN,
+            EntityType.HUSK, EntityType.MAGMA_CUBE, EntityType.PHANTOM, EntityType.PILLAGER,
+            EntityType.RAVAGER, EntityType.SHULKER, EntityType.SKELETON, EntityType.SLIME,
+            EntityType.STRAY, EntityType.VEX, EntityType.VINDICATOR, EntityType.WITCH,
+            EntityType.WITHER_SKELETON, EntityType.ZOMBIE, EntityType.ZOMBIE_VILLAGER,};
     List<EntityType> hostileMobs = Arrays.asList(hostileMobs0);
 
     public Defense(Player p) {
@@ -354,7 +354,9 @@ public class Defense {
         int heartyLevel = (int) pStat.get("defense").get(13);
         if (heartyLevel > 0) {
             double HP = Double.valueOf(plugin.getConfig().getString("general.playerBaseHP"));
-            ((Attributable) p).getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(HP + 4.0);
+            if (((Attributable) p).getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue() <= HP + 4.0) {
+                ((Attributable) p).getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(HP + 4.0);
+            }
         }
 
     }
@@ -378,7 +380,7 @@ public class Defense {
         if (healerLevel < 1) {
             return;
         }
-        int duration = 20*Math.min(3*healerLevel,9);
+        int duration = 20* Math.min(3*healerLevel,9);
         boolean[] regenerationChecks = buffCheckerRegeneration(0,duration);
         if (regenerationChecks[0]) {
             if (regenerationChecks[1]) {
@@ -445,7 +447,7 @@ public class Defense {
     }
 
     public void armorEXP(ItemStack armor) {
-        Map<Material,Integer> armorEXP = new HashMap<>();
+        Map<Material, Integer> armorEXP = new HashMap<>();
         armorEXP.put(Material.LEATHER_BOOTS,200*3);
         armorEXP.put(Material.LEATHER_LEGGINGS,350*3);
         armorEXP.put(Material.LEATHER_CHESTPLATE,400*3);

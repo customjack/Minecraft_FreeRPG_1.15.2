@@ -4,12 +4,12 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class FireworkShotByPlayerTracker {
-    static Map<UUID, Player> fireWorkPlayerMap = new HashMap<>();
+    static Map<UUID, Player> fireWorkPlayerMap = new ConcurrentHashMap<>();
 
     public void addFirework(Entity firework, Player player) {
         if (firework instanceof Firework) {

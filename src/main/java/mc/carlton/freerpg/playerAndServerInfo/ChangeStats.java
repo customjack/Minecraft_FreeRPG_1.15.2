@@ -402,5 +402,10 @@ public class ChangeStats {
         pStatAll.put("global", pStats);
         statAll.put(uuid, pStatAll);
         pStatClass.setData(statAll);
+
+        //Sets up powerlevel
+        //ScoreboardOperations sb = new ScoreboardOperations();
+        //sb.setPlayerPowerLevel(p);
+
     }
 }
