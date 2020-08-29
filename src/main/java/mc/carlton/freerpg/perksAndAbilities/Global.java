@@ -1,7 +1,9 @@
 package mc.carlton.freerpg.perksAndAbilities;
 
 import mc.carlton.freerpg.FreeRPG;
+import mc.carlton.freerpg.globalVariables.ItemGroups;
 import mc.carlton.freerpg.playerAndServerInfo.ChangeStats;
+import mc.carlton.freerpg.playerAndServerInfo.ConfigLoad;
 import mc.carlton.freerpg.playerAndServerInfo.PlayerStats;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
@@ -27,22 +29,8 @@ public class Global {
     //GET PLAYER STATS LIKE THIS:        Map<String, ArrayList<Number>> pStat = pStatClass.getPlayerData(p);
 
     Random rand = new Random(); //Random class Import
-    Material[] valuableItems0 = {Material.IRON_ORE, Material.GOLD_ORE, Material.DIAMOND_ORE, Material.EMERALD_ORE, Material.REDSTONE_ORE, Material.LAPIS_ORE,
-                                  Material.IRON_BLOCK, Material.GOLD_BLOCK, Material.DIAMOND_BLOCK, Material.EMERALD_BLOCK, Material.REDSTONE_BLOCK, Material.LAPIS_BLOCK,
-                                  Material.SLIME_BLOCK, Material.SPONGE, Material.NETHER_QUARTZ_ORE, Material.NETHER_WART_BLOCK, Material.DRAGON_EGG, Material.SHULKER_BOX,
-                                  Material.ENCHANTING_TABLE, Material.ANVIL, Material.BEACON, Material.BREWING_STAND, Material.CAKE, Material.JUKEBOX,
-                                  Material.TNT, Material.CREEPER_HEAD, Material.DRAGON_HEAD, Material.PLAYER_HEAD, Material.ZOMBIE_HEAD, Material.SKELETON_SKULL, Material.WITHER_SKELETON_SKULL,
-                                  Material.ENDER_EYE, Material.ENDER_PEARL, Material.FIREWORK_ROCKET, Material.FIRE_CHARGE, Material.POTION, Material.SPLASH_POTION, Material.LINGERING_POTION,
-                                  Material.NETHER_WART, Material.REDSTONE, Material.TRIDENT, Material.DIAMOND_AXE, Material.DIAMOND_BOOTS, Material.DIAMOND_CHESTPLATE,
-                                  Material.DIAMOND_HELMET, Material.DIAMOND_HOE, Material.DIAMOND_LEGGINGS, Material.DIAMOND_PICKAXE, Material.DIAMOND_SHOVEL, Material.DIAMOND_SWORD,
-                                  Material.ELYTRA, Material.ENCHANTED_BOOK, Material.ENCHANTED_GOLDEN_APPLE, Material.GOLDEN_APPLE, Material.IRON_INGOT,
-                                  Material.MUSIC_DISC_11, Material.MUSIC_DISC_13, Material.MUSIC_DISC_BLOCKS, Material.MUSIC_DISC_CAT,
-                                  Material.MUSIC_DISC_CHIRP, Material.MUSIC_DISC_FAR, Material.MUSIC_DISC_MALL, Material.MUSIC_DISC_MELLOHI,
-                                  Material.MUSIC_DISC_STAL, Material.MUSIC_DISC_STRAD, Material.MUSIC_DISC_WAIT, Material.MUSIC_DISC_WARD,
-                                  Material.NAME_TAG, Material.TIPPED_ARROW, Material.TOTEM_OF_UNDYING, Material.SPECTRAL_ARROW, Material.DIAMOND, Material.GOLD_INGOT,
-                                  Material.HEART_OF_THE_SEA, Material.DRAGON_BREATH, Material.EMERALD, Material.NAUTILUS_SHELL, Material.NETHER_STAR, Material.SLIME_BALL,
-                                  Material.RABBIT_FOOT};
-    List<Material> valuableItems = Arrays.asList(valuableItems0);
+
+    private boolean runMethods;
 
 
 
@@ -52,9 +40,14 @@ public class Global {
         this.itemInHand = p.getInventory().getItemInMainHand();
         this.increaseStats = new ChangeStats(p);
         this.pStatClass = new PlayerStats(p);
+        ConfigLoad configLoad = new ConfigLoad();
+        this.runMethods = configLoad.getAllowedSkillsMap().get("global");
     }
 
     public double expBoost(String skillName) {
+        if (!runMethods) {
+            return 1.0;
+        }
         double boost = 1.0;
         Map<String, ArrayList<Number>> pStat = pStatClass.getPlayerData();
         String[] gatherer0 = {"digging","woodcutting","mining","farming","fishing"};
@@ -77,6 +70,9 @@ public class Global {
     }
 
     public void skillTokenBoost(int type) {
+        if (!runMethods) {
+            return;
+        }
         String[] gatherer0 = {"digging","woodcutting","mining","farming","fishing"};
         String[] scholar0 =  {"repair","agility","alchemy","smelting","enchanting"};
         String[] fighter0 = {"archery","beastMastery","swordsmanship","defense","axeMastery"};
@@ -118,10 +114,13 @@ public class Global {
     }
 
     public void gainSoul(Entity entity) {
+        if (!runMethods) {
+            return;
+        }
         if (!p.hasPermission("freeRPG.getSouls")) {
             return;
         }
-        EntityType[] hostileMobs0 = {EntityType.SPIDER, EntityType.CAVE_SPIDER, EntityType.ENDERMAN,
+        EntityType[] hostileMobs0 = {EntityType.SPIDER, EntityType.CAVE_SPIDER, EntityType.ENDERMAN, EntityType.PIG_ZOMBIE,
                 EntityType.BLAZE, EntityType.CREEPER, EntityType.DROWNED, EntityType.ELDER_GUARDIAN,
                 EntityType.ENDERMITE, EntityType.EVOKER, EntityType.GHAST, EntityType.GUARDIAN,
                 EntityType.HUSK, EntityType.MAGMA_CUBE, EntityType.PHANTOM, EntityType.PILLAGER,
@@ -157,6 +156,9 @@ public class Global {
     }
 
     public void loseSouls(int amountLost) {
+        if (!runMethods) {
+            return;
+        }
         UUID uuid = p.getUniqueId();
         PlayerStats pStatClass = new PlayerStats(p);
         Map<UUID, Map<String, ArrayList<Number>>> statAll = pStatClass.getData();
@@ -168,9 +170,14 @@ public class Global {
     }
 
     public void betterResurrectionDeath(List<ItemStack> drops) {
+        if (!runMethods) {
+            return;
+        }
         Map<String, ArrayList<Number>> pStat = pStatClass.getPlayerData();
         if ((int) pStat.get("global").get(8) > 0) {
             ArrayList<ItemStack> savedDrops = new ArrayList<>();
+            ItemGroups itemGroups = new ItemGroups();
+            List<Material> valuableItems =  itemGroups.getValuableItems();
             for (ItemStack drop : drops) {
                 if (drop.getEnchantments().size() != 0 || valuableItems.contains(drop.getType())) {
                     double randomNum = rand.nextDouble();
@@ -196,6 +203,9 @@ public class Global {
     }
 
     public void betterResurrectionRespawn() {
+        if (!runMethods) {
+            return;
+        }
         Map<String, ArrayList<Number>> pStat = pStatClass.getPlayerData();
         if ((int) pStat.get("global").get(8) > 0 && playerSavedDrops.containsKey(p)) {
             ArrayList<ItemStack> savedDrops = playerSavedDrops.get(p);
@@ -207,6 +217,9 @@ public class Global {
     }
 
     public void avatar(){
+        if (!runMethods) {
+            return;
+        }
         PotionEffectType[] positiveEffects0  = {PotionEffectType.DOLPHINS_GRACE, PotionEffectType.LUCK, PotionEffectType.INVISIBILITY, PotionEffectType.NIGHT_VISION,
                                                PotionEffectType.FIRE_RESISTANCE, PotionEffectType.WATER_BREATHING, PotionEffectType.SPEED, PotionEffectType.JUMP,
                                                PotionEffectType.ABSORPTION, PotionEffectType.CONDUIT_POWER, PotionEffectType.DAMAGE_RESISTANCE, PotionEffectType.FAST_DIGGING,

@@ -10,28 +10,28 @@ import java.util.*;
 
 public class PsuedoEnchanting {
     Map<String, Enchantment[]> toolEnchantMap = new HashMap<>();
-    Map<Material,Object[]> itemEnchantTypeMap = new HashMap<>();
-    Map<Enchantment,Integer> enchantmentWeightMap = new HashMap<>();
-    Map<Enchantment,Integer[]> enchantmentBracketMap = new HashMap<>();
+    Map<Material, Object[]> itemEnchantTypeMap = new HashMap<>();
+    Map<Enchantment, Integer> enchantmentWeightMap = new HashMap<>();
+    Map<Enchantment, Integer[]> enchantmentBracketMap = new HashMap<>();
 
     Random rand = new Random();
 
     public PsuedoEnchanting() {
         //toolEnchantMao
-        toolEnchantMap.put("chestplate",new Enchantment[]{Enchantment.DURABILITY,Enchantment.MENDING,Enchantment.VANISHING_CURSE,Enchantment.PROTECTION_ENVIRONMENTAL,Enchantment.PROTECTION_EXPLOSIONS,Enchantment.PROTECTION_FIRE,Enchantment.PROTECTION_PROJECTILE,Enchantment.THORNS,Enchantment.BINDING_CURSE});
-        toolEnchantMap.put("leggings",new Enchantment[]{Enchantment.DURABILITY,Enchantment.MENDING,Enchantment.VANISHING_CURSE,Enchantment.PROTECTION_ENVIRONMENTAL, Enchantment.PROTECTION_EXPLOSIONS, Enchantment.PROTECTION_FIRE, Enchantment.PROTECTION_PROJECTILE, Enchantment.BINDING_CURSE});
-        toolEnchantMap.put("boots",new Enchantment[]{Enchantment.DURABILITY,Enchantment.MENDING,Enchantment.VANISHING_CURSE,Enchantment.PROTECTION_ENVIRONMENTAL, Enchantment.PROTECTION_EXPLOSIONS, Enchantment.PROTECTION_FIRE, Enchantment.PROTECTION_PROJECTILE, Enchantment.BINDING_CURSE,Enchantment.DEPTH_STRIDER,Enchantment.FROST_WALKER, Enchantment.PROTECTION_FALL});
-        toolEnchantMap.put("helmet",new Enchantment[]{Enchantment.DURABILITY,Enchantment.MENDING,Enchantment.VANISHING_CURSE,Enchantment.PROTECTION_ENVIRONMENTAL, Enchantment.PROTECTION_EXPLOSIONS, Enchantment.PROTECTION_FIRE, Enchantment.PROTECTION_PROJECTILE, Enchantment.BINDING_CURSE,Enchantment.WATER_WORKER,Enchantment.OXYGEN});
-        toolEnchantMap.put("sword", new Enchantment[]{Enchantment.DURABILITY,Enchantment.MENDING,Enchantment.VANISHING_CURSE,Enchantment.DAMAGE_ALL,Enchantment.DAMAGE_ARTHROPODS,Enchantment.DAMAGE_UNDEAD,Enchantment.KNOCKBACK,Enchantment.FIRE_ASPECT,Enchantment.LOOT_BONUS_MOBS,Enchantment.SWEEPING_EDGE});
-        toolEnchantMap.put("tool", new Enchantment[]{Enchantment.DURABILITY,Enchantment.MENDING,Enchantment.VANISHING_CURSE,Enchantment.DIG_SPEED,Enchantment.LOOT_BONUS_BLOCKS,Enchantment.SILK_TOUCH});
-        toolEnchantMap.put("bow", new Enchantment[]{Enchantment.DURABILITY,Enchantment.MENDING,Enchantment.VANISHING_CURSE,Enchantment.ARROW_DAMAGE,Enchantment.ARROW_FIRE,Enchantment.ARROW_INFINITE,Enchantment.ARROW_KNOCKBACK});
-        toolEnchantMap.put("rod", new Enchantment[]{Enchantment.DURABILITY,Enchantment.MENDING,Enchantment.VANISHING_CURSE,Enchantment.LUCK,Enchantment.LURE});
-        toolEnchantMap.put("trident",new Enchantment[]{Enchantment.DURABILITY,Enchantment.MENDING,Enchantment.VANISHING_CURSE,Enchantment.LOYALTY,Enchantment.IMPALING,Enchantment.RIPTIDE,Enchantment.CHANNELING});
-        toolEnchantMap.put("crossbow", new Enchantment[]{Enchantment.DURABILITY,Enchantment.MENDING,Enchantment.VANISHING_CURSE,Enchantment.QUICK_CHARGE,Enchantment.MULTISHOT,Enchantment.PIERCING});
-        Enchantment[] holder = new Enchantment[]{Enchantment.DURABILITY,Enchantment.MENDING,Enchantment.VANISHING_CURSE,Enchantment.PIERCING,Enchantment.MULTISHOT,Enchantment.QUICK_CHARGE,Enchantment.CHANNELING,Enchantment.RIPTIDE,Enchantment.IMPALING,Enchantment.LOYALTY,Enchantment.LURE,Enchantment.LUCK,
-                                   Enchantment.ARROW_INFINITE,Enchantment.ARROW_KNOCKBACK,Enchantment.ARROW_FIRE,Enchantment.ARROW_DAMAGE,Enchantment.SILK_TOUCH,Enchantment.LOOT_BONUS_BLOCKS,Enchantment.DIG_SPEED,Enchantment.SWEEPING_EDGE,Enchantment.LOOT_BONUS_MOBS,Enchantment.FIRE_ASPECT,
-                                   Enchantment.DAMAGE_UNDEAD,Enchantment.KNOCKBACK,Enchantment.DAMAGE_ARTHROPODS,Enchantment.DAMAGE_ALL,Enchantment.BINDING_CURSE,Enchantment.THORNS,Enchantment.FROST_WALKER,Enchantment.DEPTH_STRIDER,Enchantment.OXYGEN,Enchantment.PROTECTION_EXPLOSIONS,
-                                   Enchantment.WATER_WORKER,Enchantment.PROTECTION_PROJECTILE,Enchantment.PROTECTION_FIRE,Enchantment.PROTECTION_FALL,Enchantment.PROTECTION_ENVIRONMENTAL};
+        toolEnchantMap.put("chestplate",new Enchantment[]{Enchantment.DURABILITY, Enchantment.MENDING, Enchantment.VANISHING_CURSE, Enchantment.PROTECTION_ENVIRONMENTAL, Enchantment.PROTECTION_EXPLOSIONS, Enchantment.PROTECTION_FIRE, Enchantment.PROTECTION_PROJECTILE, Enchantment.THORNS, Enchantment.BINDING_CURSE});
+        toolEnchantMap.put("leggings",new Enchantment[]{Enchantment.DURABILITY, Enchantment.MENDING, Enchantment.VANISHING_CURSE, Enchantment.PROTECTION_ENVIRONMENTAL, Enchantment.PROTECTION_EXPLOSIONS, Enchantment.PROTECTION_FIRE, Enchantment.PROTECTION_PROJECTILE, Enchantment.BINDING_CURSE});
+        toolEnchantMap.put("boots",new Enchantment[]{Enchantment.DURABILITY, Enchantment.MENDING, Enchantment.VANISHING_CURSE, Enchantment.PROTECTION_ENVIRONMENTAL, Enchantment.PROTECTION_EXPLOSIONS, Enchantment.PROTECTION_FIRE, Enchantment.PROTECTION_PROJECTILE, Enchantment.BINDING_CURSE, Enchantment.DEPTH_STRIDER, Enchantment.FROST_WALKER, Enchantment.PROTECTION_FALL});
+        toolEnchantMap.put("helmet",new Enchantment[]{Enchantment.DURABILITY, Enchantment.MENDING, Enchantment.VANISHING_CURSE, Enchantment.PROTECTION_ENVIRONMENTAL, Enchantment.PROTECTION_EXPLOSIONS, Enchantment.PROTECTION_FIRE, Enchantment.PROTECTION_PROJECTILE, Enchantment.BINDING_CURSE, Enchantment.WATER_WORKER, Enchantment.OXYGEN});
+        toolEnchantMap.put("sword", new Enchantment[]{Enchantment.DURABILITY, Enchantment.MENDING, Enchantment.VANISHING_CURSE, Enchantment.DAMAGE_ALL, Enchantment.DAMAGE_ARTHROPODS, Enchantment.DAMAGE_UNDEAD, Enchantment.KNOCKBACK, Enchantment.FIRE_ASPECT, Enchantment.LOOT_BONUS_MOBS, Enchantment.SWEEPING_EDGE});
+        toolEnchantMap.put("tool", new Enchantment[]{Enchantment.DURABILITY, Enchantment.MENDING, Enchantment.VANISHING_CURSE, Enchantment.DIG_SPEED, Enchantment.LOOT_BONUS_BLOCKS, Enchantment.SILK_TOUCH});
+        toolEnchantMap.put("bow", new Enchantment[]{Enchantment.DURABILITY, Enchantment.MENDING, Enchantment.VANISHING_CURSE, Enchantment.ARROW_DAMAGE, Enchantment.ARROW_FIRE, Enchantment.ARROW_INFINITE, Enchantment.ARROW_KNOCKBACK});
+        toolEnchantMap.put("rod", new Enchantment[]{Enchantment.DURABILITY, Enchantment.MENDING, Enchantment.VANISHING_CURSE, Enchantment.LUCK, Enchantment.LURE});
+        toolEnchantMap.put("trident",new Enchantment[]{Enchantment.DURABILITY, Enchantment.MENDING, Enchantment.VANISHING_CURSE, Enchantment.LOYALTY, Enchantment.IMPALING, Enchantment.RIPTIDE, Enchantment.CHANNELING});
+        toolEnchantMap.put("crossbow", new Enchantment[]{Enchantment.DURABILITY, Enchantment.MENDING, Enchantment.VANISHING_CURSE, Enchantment.QUICK_CHARGE, Enchantment.MULTISHOT, Enchantment.PIERCING});
+        Enchantment[] holder = new Enchantment[]{Enchantment.DURABILITY, Enchantment.MENDING, Enchantment.VANISHING_CURSE, Enchantment.PIERCING, Enchantment.MULTISHOT, Enchantment.QUICK_CHARGE, Enchantment.CHANNELING, Enchantment.RIPTIDE, Enchantment.IMPALING, Enchantment.LOYALTY, Enchantment.LURE, Enchantment.LUCK,
+                                   Enchantment.ARROW_INFINITE, Enchantment.ARROW_KNOCKBACK, Enchantment.ARROW_FIRE, Enchantment.ARROW_DAMAGE, Enchantment.SILK_TOUCH, Enchantment.LOOT_BONUS_BLOCKS, Enchantment.DIG_SPEED, Enchantment.SWEEPING_EDGE, Enchantment.LOOT_BONUS_MOBS, Enchantment.FIRE_ASPECT,
+                                   Enchantment.DAMAGE_UNDEAD, Enchantment.KNOCKBACK, Enchantment.DAMAGE_ARTHROPODS, Enchantment.DAMAGE_ALL, Enchantment.BINDING_CURSE, Enchantment.THORNS, Enchantment.FROST_WALKER, Enchantment.DEPTH_STRIDER, Enchantment.OXYGEN, Enchantment.PROTECTION_EXPLOSIONS,
+                                   Enchantment.WATER_WORKER, Enchantment.PROTECTION_PROJECTILE, Enchantment.PROTECTION_FIRE, Enchantment.PROTECTION_FALL, Enchantment.PROTECTION_ENVIRONMENTAL};
         toolEnchantMap.put("book",holder);
 
         //itemEnchantMap
@@ -160,12 +160,12 @@ public class PsuedoEnchanting {
         enchantmentBracketMap.put(Enchantment.VANISHING_CURSE,new Integer[]{25,50});
     }
 
-    public ItemStack enchantItem(ItemStack item, int level,boolean isTreasure) {
+    public ItemStack enchantItem(ItemStack item, int level, boolean isTreasure) {
         //Getting data
         Material itemType = item.getType();
         int enchantability = (int)itemEnchantTypeMap.get(itemType)[1];
         Enchantment[] possibleEnchants0 = toolEnchantMap.get((String)itemEnchantTypeMap.get(itemType)[0]);
-        Map<Enchantment,Integer> enchantment_level= new HashMap<>();
+        Map<Enchantment, Integer> enchantment_level= new HashMap<>();
         ItemStack enchantedItem = item;
         ItemMeta meta = enchantedItem.getItemMeta();
 
@@ -236,7 +236,7 @@ public class PsuedoEnchanting {
 
     }
 
-    public ItemStack moreEnchants(ItemStack enchanted_Item, int modifiedLevel, Map<Enchantment,Integer> possibleEnchants) {
+    public ItemStack moreEnchants(ItemStack enchanted_Item, int modifiedLevel, Map<Enchantment, Integer> possibleEnchants) {
         ItemStack enchantedItem = enchanted_Item;
         ItemMeta meta = enchantedItem.getItemMeta();
         Map<Enchantment, Integer> enchants = enchanted_Item.getEnchantments();
@@ -344,12 +344,12 @@ public class PsuedoEnchanting {
         return moreEnchants(enchantedItem, (int) Math.round(modifiedLevel / 2), possibleEnchants);
     }
 
-    public ItemStack addEnchant(ItemStack preEnchantedItem, int level,boolean isTreasure) {
+    public ItemStack addEnchant(ItemStack preEnchantedItem, int level, boolean isTreasure) {
         //Getting data
         Material itemType = preEnchantedItem.getType();
         int enchantAbility = (int)itemEnchantTypeMap.get(itemType)[1];
         Enchantment[] possibleEnchants0 = toolEnchantMap.get((String)itemEnchantTypeMap.get(itemType)[0]);
-        Map<Enchantment,Integer> enchantment_level= new HashMap<>();
+        Map<Enchantment, Integer> enchantment_level= new HashMap<>();
         ItemStack enchantedItem = preEnchantedItem;
 
         ArrayList<Enchantment> possibleEnchants = new ArrayList<>(Arrays.asList(possibleEnchants0));

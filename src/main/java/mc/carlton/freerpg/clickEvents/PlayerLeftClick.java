@@ -1,5 +1,6 @@
 package mc.carlton.freerpg.clickEvents;
 
+import mc.carlton.freerpg.globalVariables.ItemGroups;
 import mc.carlton.freerpg.perksAndAbilities.*;
 import mc.carlton.freerpg.playerAndServerInfo.AbilityTracker;
 import mc.carlton.freerpg.playerAndServerInfo.PlayerStats;
@@ -16,7 +17,6 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -32,36 +32,32 @@ public class PlayerLeftClick implements Listener {
                 return;
             }
             World world = p.getWorld();
+            Material itemType = p.getInventory().getItemInMainHand().getType();
 
-            PlayerStats pStatClass = new PlayerStats(p);
-            Map<String, ArrayList<Number>> pStat = pStatClass.getPlayerData();
-            AbilityTracker abilities = new AbilityTracker(p);
-            Integer[] pAbilities = abilities.getPlayerAbilities();
+            ItemGroups itemGroups = new ItemGroups();
+            List<Material> leftClickItems = itemGroups.getLeftClickItems();
 
-            Material[] leftClickItems0 = {Material.IRON_SWORD,Material.DIAMOND_SWORD,Material.GOLDEN_SWORD,Material.STONE_SWORD,Material.WOODEN_SWORD,
-                                          Material.IRON_PICKAXE,Material.DIAMOND_PICKAXE,Material.STONE_PICKAXE,Material.GOLDEN_PICKAXE,Material.WOODEN_PICKAXE,
-                                          Material.IRON_SHOVEL,Material.DIAMOND_SHOVEL,Material.GOLDEN_SHOVEL,Material.STONE_SHOVEL,Material.WOODEN_SHOVEL,
-                                          Material.IRON_AXE,Material.DIAMOND_AXE,Material.GOLDEN_AXE,Material.STONE_AXE,Material.WOODEN_AXE,
-                                          Material.BOW,Material.CROSSBOW};
-            List<Material> leftClickItems = Arrays.asList(leftClickItems0);
-
-            if (p.getInventory().getItemInMainHand().getType() == Material.FISHING_ROD && a.equals(Action.LEFT_CLICK_BLOCK)) {
+            if (itemType == Material.FISHING_ROD && a.equals(Action.LEFT_CLICK_BLOCK)) {
                 Fishing fishingClass = new Fishing(p);
                 fishingClass.initiateAbility();
             }
 
-            else if (p.getInventory().getItemInMainHand().getType() == Material.BOW) {
+            else if (itemType == Material.BOW) {
                 Archery archeryClass = new Archery(p);
                 archeryClass.initiateAbility();
             }
-            else if (p.getInventory().getItemInMainHand().getType() == Material.CROSSBOW) {
+            else if (itemType == Material.CROSSBOW) {
                 Archery archeryClass = new Archery(p);
+                PlayerStats pStatClass = new PlayerStats(p);
+                Map<String, ArrayList<Number>> pStat = pStatClass.getPlayerData();
                 if ((int) pStat.get("archery").get(12) > 0) {
                     archeryClass.initiateAbility();
                 }
             }
             else if (p.getVehicle() != null) {
-                if (!leftClickItems.contains(p.getInventory().getItemInMainHand().getType()) && p.getVehicle().getType() == EntityType.HORSE) {
+                if (!leftClickItems.contains(itemType) && p.getVehicle().getType() == EntityType.HORSE) {
+                    AbilityTracker abilities = new AbilityTracker(p);
+                    Integer[] pAbilities = abilities.getPlayerAbilities();
                     if (pAbilities[6] > -1) {
                         BeastMastery beastMasteryClass = new BeastMastery(p);
                         beastMasteryClass.enableAbility();

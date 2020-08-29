@@ -45,6 +45,7 @@ permissions:
       freeRPG.craftGUI: true
       freeRPG.confirmGUI: true
       freeRPG.skillsGUI: true
+      freeRPG.skillConfigGUI: true
   freeRPG.toggles:
     description: gives access to all toggle commands
     default: true
@@ -260,86 +261,6 @@ permissions:
   freeRPG.saveStats:
     description: allows player to save any or all player's stats to their stat file
     default: op
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#  die:
-#    description: Player dies.
-#  heal:
-#    description: Player is healed 2 hearts.
-#    aliases: [healme,gainHP]
-#  god:
-#    description: Player becomes invincible.
-#    aliases: [invincible]
-#  printMessageFromConfig:
-#    description: Prints a test message
-#    alisases: [configPrint]
-#  sendWord:
-#    description: sends player a given word.
-#  kill:
-#    descriptions: Kills a nigga
-#  vault:
-#    description: Open a vault
-#  guiCommand:
-#    description: Creates  GUI
-# woodcuttingGUI:
-#    description: Opens woodcutting skill tree
-#    aliases: [woodcuttingTree]
-#  miningGUI:
-#    description: Opens mining skill tree
-#    aliases: [miningTree]
-#  farmingGUI:
-#    description: Opens farming skill tree
-#    aliases: [farmingTree]
-#  fishingUI:
-#    description: Opens fishing skill tree
-#    aliases: [fishingTree]
-#  archeryGUI:
-#    description: Opens archery skill tree
-#    aliases: [archeryTree]
-#  beastMasteryGUI:
-#    description: Opens beast mastery skill tree
-#    aliases: [beastMasteryTree]
-#  swordsmanshipGUI:
-#    description: Opens swordsmanship skill tree
-#    aliases: [swordsmanshipTree]
-#  defenseGUI:
-#    description: Opens defense skill tree
-#    aliases: [defenseTree]
-#  axeMasteryGUI:
-#    description: Opens axe mastery skill tree
-#    aliases: [axeMasteryTree]
-#  repairGUI:
-#    description: Opens repair skill tree
-#    aliases: [repairTree]
-#  agilityGUI:
-#    description: Opens agility skill tree
-#    aliases: [agilityTree]
-#  alchemyGUI:
-#    description: Opens alchemy skill tree
-#    aliases: [alchemyTree]
-#  smeltingGUI:
-#    description: Opens smelting skill tree
-#    aliases: [smeltingTree]
-#  enchantingGUI:
-#    description: Opens enchanting skill tree
-#    aliases: [enchantingTree]
+  freeRPG.skillConfigGUI:
+    description: allows player to open the config gui for each individual skill
+    default: true

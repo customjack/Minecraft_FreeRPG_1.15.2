@@ -2,6 +2,7 @@ package mc.carlton.freerpg.combatEvents;
 
 import mc.carlton.freerpg.FreeRPG;
 import mc.carlton.freerpg.gameTools.FireworkShotByPlayerTracker;
+import mc.carlton.freerpg.globalVariables.ItemGroups;
 import mc.carlton.freerpg.perksAndAbilities.*;
 import mc.carlton.freerpg.playerAndServerInfo.AbilityTracker;
 import mc.carlton.freerpg.playerAndServerInfo.ChangeStats;
@@ -18,7 +19,10 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 public class EntityHitEntity implements Listener {
     @EventHandler(priority = EventPriority.HIGH)
@@ -65,12 +69,10 @@ public class EntityHitEntity implements Listener {
         }
 
         if (e.getDamager() instanceof Player) {
-            Material[] shovels0 = { Material.DIAMOND_SHOVEL, Material.GOLDEN_SHOVEL, Material.IRON_SHOVEL, Material.STONE_SHOVEL, Material.WOODEN_SHOVEL};
-            List<Material> shovels = Arrays.asList(shovels0);
-            Material[] swords0 = { Material.WOODEN_SWORD, Material.STONE_SWORD, Material.GOLDEN_SWORD, Material.DIAMOND_SWORD, Material.IRON_SWORD};
-            List<Material> swords = Arrays.asList(swords0);
-            Material[] axes0 = { Material.DIAMOND_AXE, Material.GOLDEN_AXE, Material.IRON_AXE, Material.STONE_AXE, Material.WOODEN_AXE};
-            List<Material> axes = Arrays.asList(axes0);
+            ItemGroups itemGroups = new ItemGroups();
+            List<Material> shovels = itemGroups.getShovels();
+            List<Material> swords = itemGroups.getSwords();
+            List<Material> axes = itemGroups.getAxes();
 
 
             Player p = (Player) e.getDamager();
@@ -83,13 +85,21 @@ public class EntityHitEntity implements Listener {
 
             //Digging
             if (shovels.contains(p.getInventory().getItemInMainHand().getType())) {
+                ConfigLoad configLoad = new ConfigLoad();
+                if (!configLoad.getAllowedSkillsMap().get("digging")) {
+                    return;
+                }
                 int shovelKnightLevel = (int) pStat.get("digging").get(12);
-                double multiplier = 2.0;
+                double multiplier = Math.min(2.0,1.0+shovelKnightLevel);
                 e.setDamage(e.getDamage() * multiplier);
             }
 
             //swordsmanship
             else if (swords.contains(p.getInventory().getItemInMainHand().getType())) {
+                ConfigLoad configLoad = new ConfigLoad();
+                if (!configLoad.getAllowedSkillsMap().get("swordsmanship")) {
+                    return;
+                }
                 Swordsmanship swordsmanshipClass = new Swordsmanship(p);
                 if (pAbilities[7] > -1) {
                     swordsmanshipClass.enableAbility();
@@ -113,6 +123,10 @@ public class EntityHitEntity implements Listener {
             }
 
             else if (axes.contains(p.getInventory().getItemInMainHand().getType())) {
+                ConfigLoad configLoad = new ConfigLoad();
+                if (!configLoad.getAllowedSkillsMap().get("axeMastery")) {
+                    return;
+                }
                 AxeMastery axeMasteryClass = new AxeMastery(p);
                 double damage = e.getDamage();
                 if ((int)pStat.get("axeMastery").get(13) > 0) {
@@ -137,6 +151,10 @@ public class EntityHitEntity implements Listener {
         //Arrow of Light
         else if (e.getDamager() instanceof Arrow) {
             if (((Arrow) e.getDamager()).getShooter() instanceof Player) {
+                ConfigLoad configLoad = new ConfigLoad();
+                if (!configLoad.getAllowedSkillsMap().get("archery")) {
+                    return;
+                }
                 Player p = (Player) ((Arrow) e.getDamager()).getShooter();
                 PlayerStats pStatClass = new PlayerStats(p);
                 Map<String, ArrayList<Number>> pStat = pStatClass.getPlayerData();
@@ -158,6 +176,10 @@ public class EntityHitEntity implements Listener {
         }
         //Crossbow Strike
         else if (e.getDamager() instanceof Firework) {
+            ConfigLoad configLoad = new ConfigLoad();
+            if (!configLoad.getAllowedSkillsMap().get("archery")) {
+                return;
+            }
             Entity firework = e.getDamager();
             FireworkShotByPlayerTracker fireworkTracker = new FireworkShotByPlayerTracker();
             Player p = fireworkTracker.getPlayer(firework);
@@ -179,6 +201,10 @@ public class EntityHitEntity implements Listener {
         }
         //Sharp Teeth and Keep Away
         else if (e.getDamager() instanceof Entity) {
+            ConfigLoad configLoad = new ConfigLoad();
+            if (!configLoad.getAllowedSkillsMap().get("beastMastery")) {
+                return;
+            }
             Entity wolf = e.getDamager();
             if (wolf.getType() == EntityType.WOLF) {
                 Tameable dog = (Tameable) wolf;
@@ -210,22 +236,27 @@ public class EntityHitEntity implements Listener {
                             }
                         }.runTaskLater(plugin, 1);
                     }
-
+                    Map<String, Integer> expMap = configLoad.getExpMapForSkill("beastMastery");
                     LivingEntity livingEnemy = (LivingEntity) enemy;
                     if (e.getFinalDamage() > livingEnemy.getHealth()) {
                         double heartsHealed = (int) pStat.get("beastMastery").get(9);
                         LivingEntity livingDog = (LivingEntity) dog;
                         double maxHealth = ((Attributable) dog).getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
                         livingDog.setHealth(Math.min(livingDog.getHealth() + heartsHealed, maxHealth));
-                        increaseStats.changeEXP("beastMastery", 500);
+                        BeastMastery beastMastery = new BeastMastery(p);
+                        beastMastery.dogKillEntity(enemy);
                     }
-                    increaseStats.changeEXP("beastMastery", (int) Math.round(e.getFinalDamage() * 8) * 10);
+                    increaseStats.changeEXP("beastMastery", (int) Math.round(e.getFinalDamage() * expMap.get("dogDamage_EXPperDamagePointDone")));
 
                 }
             }
         }
         //Wolf take damage EXP
         else if (e.getEntity() instanceof Entity) {
+            ConfigLoad configLoad = new ConfigLoad();
+            if (!configLoad.getAllowedSkillsMap().get("beastMastery")) {
+                return;
+            }
             if (!(e.getDamager() instanceof Player)) {
                 Entity wolf = e.getEntity();
                 if (wolf.getType() == EntityType.WOLF) {

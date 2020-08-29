@@ -1,11 +1,9 @@
 package mc.carlton.freerpg.miscEvents;
 
-import mc.carlton.freerpg.FreeRPG;
+import mc.carlton.freerpg.globalVariables.ExpMaps;
+import mc.carlton.freerpg.globalVariables.ItemGroups;
 import mc.carlton.freerpg.perksAndAbilities.*;
-import mc.carlton.freerpg.playerAndServerInfo.AbilityTracker;
-import mc.carlton.freerpg.playerAndServerInfo.ChangeStats;
-import mc.carlton.freerpg.playerAndServerInfo.PlacedBlocks;
-import mc.carlton.freerpg.playerAndServerInfo.PlayerStats;
+import mc.carlton.freerpg.playerAndServerInfo.*;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -19,14 +17,19 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.Plugin;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 public class PlayerBlockBreak implements Listener {
     @EventHandler
     void onblockBreak(BlockBreakEvent e){
-        Plugin plugin = FreeRPG.getPlugin(FreeRPG.class);
+        //WorldGuard Check
+        if (e.isCancelled()) {
+            return;
+        }
 
         Player p = e.getPlayer();
         Block block = e.getBlock();
@@ -34,161 +37,25 @@ public class PlayerBlockBreak implements Listener {
         Material blockType = block.getType();
         World world = e.getBlock().getWorld();
 
-        //WorldGuard Check
-        if (e.isCancelled()) {
-            return;
-        }
-
+        ItemGroups itemGroups = new ItemGroups();
 
         // Tools and Other
-        Material[] pickaxes0 = {Material.DIAMOND_PICKAXE, Material.GOLDEN_PICKAXE, Material.IRON_PICKAXE, Material.STONE_PICKAXE, Material.WOODEN_PICKAXE};
-        List<Material> pickaxes = Arrays.asList(pickaxes0);
-        Material[] axes0 = {Material.DIAMOND_AXE, Material.GOLDEN_AXE, Material.IRON_AXE, Material.STONE_AXE, Material.WOODEN_AXE};
-        List<Material> axes = Arrays.asList(axes0);
-        Material[] shovels0 = {Material.DIAMOND_SHOVEL, Material.GOLDEN_SHOVEL, Material.IRON_SHOVEL, Material.STONE_SHOVEL, Material.WOODEN_SHOVEL};
-        List<Material> shovels = Arrays.asList(shovels0);
-        Material[] hoes0 = {Material.DIAMOND_HOE, Material.GOLDEN_HOE, Material.IRON_HOE, Material.STONE_HOE, Material.WOODEN_HOE};
-        List<Material> hoes = Arrays.asList(hoes0);
+        List<Material> pickaxes = itemGroups.getPickaxes();
+        List<Material> axes = itemGroups.getAxes();
+        List<Material> shovels = itemGroups.getShovels();
+        List<Material> hoes = itemGroups.getHoes();
 
-        Material[] tallCrops0 = {Material.SUGAR_CANE, Material.BAMBOO, Material.CACTUS, Material.KELP, Material.KELP_PLANT};
-        List<Material> tallCrops = Arrays.asList(tallCrops0);
-        Material[] logs0 = {Material.ACACIA_LOG, Material.BIRCH_LOG, Material.DARK_OAK_LOG, Material.OAK_LOG, Material.SPRUCE_LOG, Material.JUNGLE_LOG,
-                            Material.STRIPPED_ACACIA_LOG, Material.STRIPPED_BIRCH_LOG, Material.STRIPPED_DARK_OAK_LOG, Material.STRIPPED_JUNGLE_LOG,
-                            Material.STRIPPED_OAK_LOG, Material.STRIPPED_SPRUCE_LOG};
-        List<Material> logs = Arrays.asList(logs0);
-        Material[] leaves0 = {Material.ACACIA_LEAVES, Material.BIRCH_LEAVES, Material.DARK_OAK_LEAVES, Material.OAK_LEAVES, Material.SPRUCE_LEAVES, Material.JUNGLE_LEAVES};
-        List<Material> leaves = Arrays.asList(leaves0);
+        //Blocks
+        List<Material> tallCrops = itemGroups.getTallCrops();
+        List<Material> logs = itemGroups.getLogs();
 
-        //Creates diggingEXP blocks
-        Map<Material, Integer> diggingEXP = new HashMap<Material, Integer>();
-        diggingEXP.put(Material.CLAY,150);
-        diggingEXP.put(Material.FARMLAND,100);
-        diggingEXP.put(Material.GRASS_BLOCK,100);
-        diggingEXP.put(Material.GRASS_PATH,100);
-        diggingEXP.put(Material.GRAVEL,100);
-        diggingEXP.put(Material.MYCELIUM,100);
-        diggingEXP.put(Material.PODZOL,100);
-        diggingEXP.put(Material.COARSE_DIRT,100);
-        diggingEXP.put(Material.DIRT,100);
-        diggingEXP.put(Material.RED_SAND,130);
-        diggingEXP.put(Material.SAND,100);
-        diggingEXP.put(Material.SOUL_SAND,150);
-        diggingEXP.put(Material.SNOW_BLOCK,110);
-        diggingEXP.put(Material.SNOW,15);
-        diggingEXP.put(Material.WHITE_CONCRETE_POWDER,100);
-        diggingEXP.put(Material.ORANGE_CONCRETE_POWDER,100);
-        diggingEXP.put(Material.MAGENTA_CONCRETE_POWDER,100);
-        diggingEXP.put(Material.LIGHT_BLUE_CONCRETE_POWDER,100);
-        diggingEXP.put(Material.YELLOW_CONCRETE_POWDER,100);
-        diggingEXP.put(Material.LIME_CONCRETE_POWDER,100);
-        diggingEXP.put(Material.PINK_CONCRETE_POWDER,100);
-        diggingEXP.put(Material.GRAY_CONCRETE_POWDER,100);
-        diggingEXP.put(Material.LIGHT_GRAY_CONCRETE_POWDER,100);
-        diggingEXP.put(Material.CYAN_CONCRETE_POWDER,100);
-        diggingEXP.put(Material.PURPLE_CONCRETE_POWDER,100);
-        diggingEXP.put(Material.BLUE_CONCRETE_POWDER,100);
-        diggingEXP.put(Material.BROWN_CONCRETE_POWDER,100);
-        diggingEXP.put(Material.GREEN_CONCRETE_POWDER,100);
-        diggingEXP.put(Material.RED_CONCRETE_POWDER,100);
-        diggingEXP.put(Material.BLACK_CONCRETE_POWDER,100);
-
-
-
-        //Creates blocks that yield woodcutting xp
-        Map<Material, Integer> woodcuttingEXP = new HashMap<Material, Integer>();
-        woodcuttingEXP.put(Material.ACACIA_LOG,200);
-        woodcuttingEXP.put(Material.BIRCH_LOG,200);
-        woodcuttingEXP.put(Material.DARK_OAK_LOG,200);
-        woodcuttingEXP.put(Material.OAK_LOG,200);
-        woodcuttingEXP.put(Material.SPRUCE_LOG,200);
-        woodcuttingEXP.put(Material.JUNGLE_LOG,200);
-        woodcuttingEXP.put(Material.ACACIA_PLANKS,55);
-        woodcuttingEXP.put(Material.BIRCH_PLANKS,55);
-        woodcuttingEXP.put(Material.DARK_OAK_PLANKS,55);
-        woodcuttingEXP.put(Material.OAK_PLANKS,55);
-        woodcuttingEXP.put(Material.SPRUCE_PLANKS,55);
-        woodcuttingEXP.put(Material.JUNGLE_PLANKS,55);
-        woodcuttingEXP.put(Material.ACACIA_LEAVES,45);
-        woodcuttingEXP.put(Material.BIRCH_LEAVES,45);
-        woodcuttingEXP.put(Material.DARK_OAK_LEAVES,45);
-        woodcuttingEXP.put(Material.JUNGLE_LEAVES,45);
-        woodcuttingEXP.put(Material.OAK_LEAVES,45);
-        woodcuttingEXP.put(Material.SPRUCE_LEAVES,45);
-        woodcuttingEXP.put(Material.BROWN_MUSHROOM_BLOCK,250);
-        woodcuttingEXP.put(Material.RED_MUSHROOM_BLOCK,250);
-
-        //Blocks that yield mining EXP
-        Map<Material, Integer> miningEXP = new HashMap<Material, Integer>();
-        miningEXP.put(Material.ICE,75);
-        miningEXP.put(Material.BLUE_ICE,75);
-        miningEXP.put(Material.PACKED_ICE,75);
-        miningEXP.put(Material.FROSTED_ICE,75);
-        miningEXP.put(Material.ANDESITE,95);
-        miningEXP.put(Material.COAL_ORE,300);
-        miningEXP.put(Material.DIORITE,95);
-        miningEXP.put(Material.END_STONE,75);
-        miningEXP.put(Material.GRANITE,95);
-        miningEXP.put(Material.NETHERRACK,50);
-        miningEXP.put(Material.NETHER_QUARTZ_ORE,325);
-        miningEXP.put(Material.MOSSY_COBBLESTONE,120);
-        miningEXP.put(Material.SANDSTONE,75);
-        miningEXP.put(Material.RED_SANDSTONE,75);
-        miningEXP.put(Material.SPAWNER,7500);
-        miningEXP.put(Material.STONE,75);
-        miningEXP.put(Material.TERRACOTTA,75);
-        miningEXP.put(Material.RED_TERRACOTTA,75);
-        miningEXP.put(Material.ORANGE_TERRACOTTA,75);
-        miningEXP.put(Material.YELLOW_TERRACOTTA,75);
-        miningEXP.put(Material.BROWN_TERRACOTTA,75);
-        miningEXP.put(Material.WHITE_TERRACOTTA,75);
-        miningEXP.put(Material.LIGHT_GRAY_TERRACOTTA,75);
-        miningEXP.put(Material.IRON_ORE,500);
-        miningEXP.put(Material.REDSTONE_ORE,700);
-        miningEXP.put(Material.LAPIS_ORE,1250);
-        miningEXP.put(Material.DIAMOND_ORE,2500);
-        miningEXP.put(Material.GOLD_ORE,700);
-        miningEXP.put(Material.EMERALD_ORE,4000);
-        miningEXP.put(Material.OBSIDIAN,150);
-
-
-        Map<Material, Integer> farmingEXP = new HashMap<Material, Integer>();
-        farmingEXP.put(Material.WHEAT,200);
-        farmingEXP.put(Material.BEETROOTS,200);
-        farmingEXP.put(Material.CARROTS,200);
-        farmingEXP.put(Material.POTATOES,200);
-        farmingEXP.put(Material.MELON,400);
-        farmingEXP.put(Material.PUMPKIN,400);
-        farmingEXP.put(Material.BAMBOO,60);
-        farmingEXP.put(Material.COCOA,300);
-        farmingEXP.put(Material.SUGAR_CANE,125);
-        farmingEXP.put(Material.CACTUS,200);
-        farmingEXP.put(Material.RED_MUSHROOM,300);
-        farmingEXP.put(Material.BROWN_MUSHROOM,300);
-        farmingEXP.put(Material.SWEET_BERRIES,250);
-        farmingEXP.put(Material.KELP,20);
-        farmingEXP.put(Material.SEA_PICKLE,300);
-        farmingEXP.put(Material.NETHER_WART,225);
-        farmingEXP.put(Material.CHORUS_PLANT,200);
-
-        Map<Material, Object[]> flamePickEXP = new HashMap<Material, Object[]>();
-        flamePickEXP.put(Material.IRON_ORE,new Object[]{"mining",500});
-        flamePickEXP.put(Material.COBBLESTONE,new Object[]{"mining",0});
-        flamePickEXP.put(Material.STONE,new Object[]{"mining",75});
-        flamePickEXP.put(Material.SANDSTONE,new Object[]{"mining",75});
-        flamePickEXP.put(Material.RED_SANDSTONE,new Object[]{"mining",75});
-        flamePickEXP.put(Material.SAND,new Object[]{"digging",75});
-        flamePickEXP.put(Material.QUARTZ_BLOCK,new Object[]{"mining",0});
-        flamePickEXP.put(Material.NETHERRACK,new Object[]{"mining",50});
-        flamePickEXP.put(Material.CLAY,new Object[]{"digging",75});
-        flamePickEXP.put(Material.STONE_BRICKS,new Object[]{"mining",0});
-        flamePickEXP.put(Material.WET_SPONGE,new Object[]{"mining",75});
-        flamePickEXP.put(Material.CACTUS,new Object[]{"farming",200});
-        flamePickEXP.put(Material.JUNGLE_LOG,new Object[]{"woodcutting",200});
-        flamePickEXP.put(Material.SPRUCE_LOG,new Object[]{"woodcutting",200});
-        flamePickEXP.put(Material.OAK_LOG,new Object[]{"woodcutting",200});
-        flamePickEXP.put(Material.DARK_OAK_LOG,new Object[]{"woodcutting",200});
-        flamePickEXP.put(Material.BIRCH_LOG,new Object[]{"woodcutting",200});
-        flamePickEXP.put(Material.ACACIA_LOG,new Object[]{"woodcutting",200});
+        //Gets Block-EXP maps
+        ExpMaps expMaps = new ExpMaps();
+        Map<Material, Integer> diggingEXP = expMaps.getDiggingEXP();
+        Map<Material, Integer> woodcuttingEXP = expMaps.getWoodcuttingEXP();
+        Map<Material, Integer> miningEXP = expMaps.getMiningEXP();
+        Map<Material, Integer> farmingEXP = expMaps.getFarmingEXP();
+        Map<Material, Object[]> flamePickEXP = expMaps.getFlamePickEXP();
 
 
         if (p.getGameMode() == GameMode.CREATIVE) {
@@ -208,16 +75,10 @@ public class PlayerBlockBreak implements Listener {
         ItemStack itemInHand = p.getInventory().getItemInMainHand();
 
         //Tracked Blocks
-        PlacedBlocks placedClass = new PlacedBlocks();
-        ArrayList<Location> blocksLocations = placedClass.getBlocks();
-        boolean natural = true;
-        for (Location blockLocation : blocksLocations) {
-            if (loc.equals(blockLocation)) {
-                blocksLocations.remove(blockLocation);
-                placedClass.setBlocks(blocksLocations);
-                natural = false;
-                break;
-            }
+        PlacedBlocksManager placedBlocksManager = new PlacedBlocksManager();
+        boolean natural = !placedBlocksManager.isBlockTracked(block);
+        if (!natural) {
+            placedBlocksManager.removeBlock(block);
         }
 
         //EXP drops
@@ -234,6 +95,10 @@ public class PlayerBlockBreak implements Listener {
                 if (veinMinerLevel > 0 && veinMinerToggle > 0) {
                     miningClass.veinMiner(block,blockType);
                 }
+                else {
+                    Smelting smeltingClass = new Smelting(p);
+                    smeltingClass.flamePick(block, world,blockType);
+                }
             }
             else {
                 Smelting smeltingClass = new Smelting(p);
@@ -242,6 +107,10 @@ public class PlayerBlockBreak implements Listener {
         }
 
         else if(diggingEXP.containsKey(blockType)) {
+            ConfigLoad configLoad = new ConfigLoad();
+            if (!configLoad.getAllowedSkillsMap().get("digging")) {
+                return;
+            }
             increaseStats.changeEXP("digging",diggingEXP.get(blockType));
             Material[] treasureBlocks0 = {Material.CLAY, Material.GRASS_BLOCK, Material.GRAVEL, Material.MYCELIUM, Material.PODZOL, Material.COARSE_DIRT,
                                           Material.DIRT, Material.RED_SAND, Material.SAND, Material.SOUL_SAND, Material.SNOW_BLOCK};
@@ -303,7 +172,9 @@ public class PlayerBlockBreak implements Listener {
                 if (age.getAge() == age.getMaximumAge()) {
                     increaseStats.changeEXP("farming",farmingEXP.get(blockType));
                     if (blockType == Material.NETHER_WART) {
-                        increaseStats.changeEXP("alchemy",500);
+                        ConfigLoad configLoad = new ConfigLoad();
+                        Map<String, Integer> expMap = configLoad.getExpMapForSkill("alchemy");
+                        increaseStats.changeEXP("alchemy",expMap.get("breakNetherWart"));
                     }
                     farmingClass.farmingDoubleDropCrop(block,world);
                 }

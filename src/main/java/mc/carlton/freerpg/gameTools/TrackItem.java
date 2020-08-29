@@ -22,6 +22,7 @@ public class TrackItem {
             PersistentDataContainer container = itemMeta.getPersistentDataContainer();
             if (container.has(key, PersistentDataType.STRING)) {
                 container.remove(key);
+                item.setItemMeta(itemMeta);
                 return item;
             }
         }
